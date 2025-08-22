@@ -1,0 +1,53 @@
+#!/bin/bash
+
+get_vpn_details() {
+    # Array of VPN interface patterns to check
+    local vpn_patterns=("tun" "wg" "ppp" "vpn")
+    local found_vpn=false
+    
+    # Get all network interfaces
+    local interfaces=$(ip link show | grep -E '^[0-9]+:' | awk -F': ' '{print $2}')
+    
+    for iface in $interfaces; do
+        for pattern in "${vpn_patterns[@]}"; do
+            if [[ "$iface" == *"$pattern"* ]]; then
+                # This is a VPN interface
+                found_vpn=true
+                
+                # Get IP information
+                local ip_info=$(ip addr show dev "$iface" 2>/dev/null | grep 'inet ' | awk '{print $2}')
+                local gateway=$(ip route show dev "$iface" 2>/dev/null | grep 'default via' | awk '{print $3}')
+                
+                if [[ -n "$ip_info" ]]; then
+                    if [[ -n "$gateway" ]]; then
+                        echo " $iface via $gateway $ip_info"
+                    else
+                        echo " $iface $ip_info"
+                    fi
+                    return 0
+                else
+                    echo " $iface (no IP)"
+                    return 0
+                fi
+            fi
+        done
+    done
+    
+    if ! $found_vpn; then
+        # Check for OpenVPN process (might be establishing connection)
+        if pgrep -x openvpn >/dev/null; then
+            echo " Connecting OpenVPN..."
+            return 0
+        fi
+        
+        # Check for WireGuard
+        if command -v wg >/dev/null 2>&1 && wg show 2>/dev/null | grep -q "interface"; then
+            echo " Connecting WireGuard..."
+            return 0
+        fi
+        
+        echo " No VPN"
+    fi
+}
+
+get_vpn_details

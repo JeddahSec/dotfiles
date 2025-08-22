@@ -1,0 +1,266 @@
+#+TITLE: DWM
+#+AUTHOR: (JS) JeddahSec
+#+ATTR_HTML: :alt dmenu-distrotube :title dmenu-distrotube :align left
+
+* Table of Contents :toc:
+- [[#about-dwm][About DWM]]
+  - [[#the-patches-i-added-to-this-build-include][The patches I added to this build include:]]
+  - [[#install-xorg][Install Xorg]]
+- [[#compile-and-install-dwm][Compile and Install DWM]]
+  - [[#configure-xinitrc][Configure .xinitrc]]
+- [[#my-keybindings][My Keybindings]]
+  - [[#main-keybindings][Main keybindings]]
+- [[#running-dwm][Running dwm]]
+- [[#colors-other-stuff][Colors, other stuff]]
+- [[#keybinding-conventions][Keybinding Conventions]]
+- [[#keybindings][Keybindings]]
+  - [[#essential-application-launchers][Essential Application Launchers]]
+  - [[#script--utility-launchers][Script & Utility Launchers]]
+  - [[#window-management][Window Management]]
+  - [[#layout-management][Layout Management]]
+  - [[#tag--monitor-control][Tag & Monitor Control]]
+  - [[#gaps-control][Gaps Control]]
+  - [[#status-bar-toggles-mod--control][Status Bar Toggles (Mod + Control)]]
+  - [[#media-controls][Media Controls]]
+  - [[#system--session][System & Session]]
+- [[#mouse-bindings][Mouse Bindings]]
+- [[#patches--features-applied][Patches & Features Applied]]
+- [[#custom-scripts][Custom Scripts]]
+
+* About DWM
+[[../.screenshots/dwm.png]]
+Dwm is an extremely fast, small, and dynamic window manager for X. Dwm is created by the good folks at suckless.org.  
+
+** The patches I added to this build include:
++ [[https://dwm.suckless.org/patches/bartoggle][bartoggle keybinds]]
++ [[https://dwm.suckless.org/patches/bulkill][bulkill]]
++ [[https://dwm.suckless.org/patches/colorbar][colorbar]]
++ [[https://dwm.suckless.org/patches/fixmultimon][fixmultimon]]
++ [[https://dwm.suckless.org/patches/focusfullscreen][focusfullscreen]]
++ [[https://dwm.suckless.org/patches/focusmaster][focusmaster-return]]
++ [[https://dwm.suckless.org/patches/focusmonmouse][focusmonmouse]]
++ [[https://dwm.suckless.org/patches/hide_vacant_tags][hide vacant tags]]
++ [[https://dwm.suckless.org/patches/preventfocusshift][preventfocusshift]]
++ [[https://dwm.suckless.org/patches/restartsig][restartsig]]
++ [[https://dwm.suckless.org/patches/spawntag][spawntag]]
++ [[https://dwm.suckless.org/patches/stacker][stacker]]
++ [[https://dwm.suckless.org/patches/statuscmd][statuscmd]]
++ [[https://dwm.suckless.org/patches/sticky][sticky]]
++ [[https://dwm.suckless.org/patches/swallow][swallow]]
++ [[https://dwm.suckless.org/patches/vanitygaps][vanitygaps]]
++ [[https://dwm.suckless.org/patches/xrdb][xrdb]]
+
+** Install Xorg
+#+begin_src bash
+sudo pacman -S xorg-server xorg-xinit xorg-xrandr xorg-xsetroot
+#+end_src
+
+* Compile and Install DWM
+This command downloads the DWM source code into a directory named dwm
+#+begin_src bash
+git clone https://github.com/JeddahSec/dotfiles.git
+cd dotfiles
+cp -r .config/dwm ~/.config
+cd ~/.config/dwm
+sudo make clean install
+#+end_src
+
+~sudo make clean install~ compiles the source code and installs the DWM executable.
+
+** Configure .xinitrc
+If you don't already have one in your directory home,  ~.xinitrc~ copy the default configuration from ~/etc/X11/xinit/xinitrc~ to your home directory.
+#+begin_src bash
+cp /etc/X11/xinit/xinitrc ~/.xinitrc
+echo 'exec dwm' >> ~/.xinitrc
+#+end_src
+
+This command creates or overwrites the ~.xinitrc~ file in your home directory, instructing the system to execute DWM when ~startx~ is run.
+
+* My Keybindings
+The MODKEY is set to the Super key (aka the Windows key).  I try to keep the keybindings consistent with all of my window managers, but if you several of my window manager configs, there may be some discrepancies between them.
+
+** Main keybindings
+| Keybinding                 | Actioin                  |
+| MODKEY + ENTER             | opens terminal           |
+| MODKEY + q                 | closes window with focus |
+| MODKEY + SHIFT + Backspace | Fully exit              |
+
+* Running dwm
+If you do not use a login manager (such as lightdm) then you can add the following line to your .xinitrc to start dwm using startx:
+~exec dwm~
+If you use a login manager (like lightdm), make sure that you have a file called dwm.desktop in your /usr/share/xsessions/ directory.  It should look something like this:
+
+*** Installing a Display Manager (DM)
+#+begin_example
+sudo pacman -S lightdm
+sudo pacman -S lightdm-gtk-greeter
+sudo pacman -S lightdm-gtk-greeter-settings
+sudo systemctl enable lightdm
+mkdir /usr/share/xsessions
+sudo touch /usr/share/xsessions/dwm.desktop 
+sudo nvim /usr/share/xsessions/dwm.desktop
+#+end_example
+
+Add the following:
+#+begin_example
+[Desktop Entry]
+Encoding=UTF-8
+Name=Dwm
+Comment=Dynamic window manager
+Exec=dwm
+Icon=dwm
+Type=XSession
+#+end_example
+
+* Colors, other stuff
+
+
+* Keybinding Conventions
+
+- =MODKEY= :: Typically the Super (Windows) key, or Alt (Mod1). Defined in =config.h=.
+- =ShiftMask= :: The Shift key.
+- =ControlMask= :: The Control key.
+- =Mod1Mask= :: The Alt key.
+
+* Keybindings
+** Essential Application Launchers
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + Shift + r=      | =spawn=                               | Launch application launcher (rofi?)            |
+| =MODKEY + d=              | =spawn=                               | Launch =dmenu=                                 |
+| =MODKEY + Return=         | =spawn=                               | Launch terminal (=st=)                         |
+| =MODKEY + Control + d=    | =spawn=                               | Launch Thunar file manager                     |
+| =MODKEY + w=              | =spawn=                               | Launch web browser                             |
+| =MODKEY + m=              | =spawn=                               | Launch terminal with =termusic=                |
+| =MODKEY + n=              | =spawn=                               | Launch terminal with =nvim=                    |
+| =MODKEY + f=              | =spawn=                               | Launch terminal with =fff= file manager        |
+| =MODKEY + p=              | =spawn=                               | Launch Darktable                               |
+| =MODKEY + Shift + h=      | =spawn=                               | Launch terminal with =htop=                    |
+
+** Script & Utility Launchers
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + Shift + n=      | =spawn=                               | Launch =dmenunotes= script                     |
+| =MODKEY + v=              | =spawn=                               | Select from clipboard history (=cliphist sel=) |
+| =MODKEY + c=              | =spawn=                               | Add to clipboard history (=cliphist add=)      |
+| =MODKEY + Shift + a=      | =spawn=                               | Launch =dmenuvids= script                      |
+| =MODKEY + Control + a=    | =spawn=                               | Launch =dmenuaudioswitch= script               |
+| =MODKEY + Shift + d=      | =spawn=                               | Launch =rip= script                            |
+| =MODKEY + r=              | =spawn=                               | Launch =rec= script                            |
+| =MODKEY + Shift + `=      | =spawn=                               | Launch =define= script                         |
+| =MODKEY + Shift + w=      | =spawn=                               | Launch =wallpapermenu= script                  |
+| =MODKEY + F1=             | =spawn=                               | Take a screenshot                              |
+| =MODKEY + Shift + F1=     | =spawn=                               | Take a screenshot of a color                   |
+| =MODKEY + F2=             | =spawn=                               | Launch =vb= script                             |
+| =MODKEY + Shift + F2=     | =spawn=                               | Launch =dmenutemp= script                      |
+| =MODKEY + F3=             | =spawn=                               | Launch =phototransfer= script                  |
+| =MODKEY + Control + F12=  | =spawn=                               | Launch =redshift-dmenu= script                 |
+
+** Window Management
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + q=              | =killclient=                          | Kill the focused window                        |
+| =MODKEY + Shift + q=      | =killclient=                          | Kill all windows *except* the focused one      |
+| =MODKEY + Tab=            | =view=                                | View previous tag/toggle tag view              |
+| =MODKEY + 0=              | =view=                                | View all tags (show all windows)               |
+| =MODKEY + Shift + 0=      | =tag=                                 | Move window to all tags                        |
+| =MODKEY + space=          | =zoom=                                | Zoom/maximize the current window (monocle)     |
+| =MODKEY + f=              | =togglefullscreen=                    | Toggle fullscreen for the focused window       |
+| =MODKEY + Shift + space=  | =togglefloating=                      | Toggle floating mode for the focused window    |
+| =MODKEY + Control + space=| =focusmaster=                         | Focus the master area window                   |
+| =MODKEY + Shift + s=      | =togglesticky=                        | Toggle sticky mode (show on all tags)          |
+
+** Layout Management
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + t=              | =setlayout=                           | Set tiled layout (default)                     |
+| =MODKEY + Shift + t=      | =setlayout=                           | Set dwindle layout                             |
+| =MODKEY + s=              | =setlayout=                           | Set spiral layout                              |
+| =MODKEY + Shift + m=      | =setlayout=                           | Set monocle layout (fullscreen)                |
+| =MODKEY + Control + space=| =setlayout=                           | Reset to default layout                        |
+| =MODKEY + h=              | =setmfact=                            | Decrease master area size                      |
+| =MODKEY + l=              | =setmfact=                            | Increase master area size                      |
+| =MODKEY + Shift + i=      | =incnmaster=                          | Increase number of master clients              |
+| =MODKEY + Control + i=    | =incnmaster=                          | Decrease number of master clients              |
+
+** Tag & Monitor Control
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + [1-9]=          | =view=                                | View tag [1-9]                                 |
+| =MODKEY + Shift + [1-9]=  | =tag=                                 | Move focused window to tag [1-9]               |
+| =MODKEY + ]=              | =focusmon=                            | Focus next monitor                             |
+| =MODKEY + [=              | =focusmon=                            | Focus previous monitor                         |
+| =MODKEY + Shift + ]=      | =tagmon=                              | Move window to next monitor                    |
+| =MODKEY + Shift + [=      | =tagmon=                              | Move window to previous monitor                |
+
+** Gaps Control
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + -/=             | =incrgaps=                            | Decrease/Increase all gaps                     |
+| =MODKEY + Shift + -/=     | =defaultgaps= / =togglegaps=          | Reset gaps to default / Toggle gaps on/off     |
+| =MODKEY + Alt + i=        | =incrigaps=                           | Increase inner gaps                            |
+| =MODKEY + Alt + Shift + i=| =incrigaps=                           | Decrease inner gaps                            |
+| =MODKEY + Alt + o=        | =incrogaps=                           | Increase outer gaps                            |
+| =MODKEY + Alt + Shift + o=| =incrogaps=                           | Decrease outer gaps                            |
+| *... (see config.h for full list of gap controls) ...* | |                                                |
+
+** Status Bar Toggles (Mod + Control)
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + Control + t=    | =togglebartitle=                      | Toggle window title in status bar              |
+| =MODKEY + Control + s=    | =togglebarstatus=                     | Toggle status information (e.g., clock, volume)|
+| =MODKEY + Control + t=    | =togglebartags=                       | Toggle tag display in status bar               |
+| =MODKEY + Control + e=    | =togglebarcolor=                      | Swap foreground/background colors for bar      |
+| =MODKEY + Control + r=    | =togglebarlt=                         | Toggle layout indicator in status bar          |
+| =MODKEY + Control + f=    | =togglebarfloat=                      | Toggle floating window indicator               |
+| =MODKEY + Shift + b=      | =togglebar=                           | Show/Hide the bar entirely                     |
+
+** Media Controls
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + F12=            | =spawn=                               | Next track (Termusic)                          |
+| =MODKEY + F11=            | =spawn=                               | Play/Pause (Termusic)                          |
+| =MODKEY + F10=            | =spawn=                               | Previous track (Termusic)                      |
+| =MODKEY + Shift + F11=    | =spawn=                               | Global Play/Pause                              |
+| =MODKEY + F6=             | =spawn=                               | Volume Up                                      |
+| =MODKEY + F5=             | =spawn=                               | Volume Down                                    |
+| =MODKEY + Shift + F12=    | =spawn=                               | Toggle Mute                                    |
+| *... (XF86 keybindings also supported) ...* | |                                                |
+
+** System & Session
+| Key Chord                 | Function                              | Description                                    |
+|---------------------------+---------------------------------------+------------------------------------------------|
+| =MODKEY + Shift + Backspace= | =quit=                             | Quit DWM (exits X session if in .xinitrc)      |
+| =MODKEY + Control + Shift + q= | =quit=                            | Restart DWM (applies changes)                  |
+| =MODKEY + Control + \=    | =xrdb=                               | Reload X resources (.Xresources)               |
+| =MODKEY + F8=             | =spawn=                               | Lock screen with =slock=                       |
+| =MODKEY + Shift + F8=     | =spawn=                               | Suspend system and lock                        |
+| =MODKEY + F7=             | =spawn=                               | Start status timer                             |
+| =MODKEY + Shift + F7=     | =spawn=                               | Stop status timer                              |
+
+* Mouse Bindings
+- =MODKEY + Left Click= on window :: Move window (drag)
+- =MODKEY + Right Click= on window :: Resize window (drag)
+- =MODKEY + Middle Click= on window :: Reset gaps to default
+- =MODKEY + Scroll= on window :: Increase/Decrease all gaps
+- =Click= on tag in bar :: View that tag
+- =Right Click= on tag in bar :: Toggle tag view
+- =MODKEY + Click= on tag in bar :: Move window to tag
+- =MODKEY + Right Click= on tag in bar :: Toggle tag for window
+- =Middle Click= on root window (desktop) :: Toggle bar visibility
+
+* Patches & Features Applied
+This build likely includes the following patches:
+- [[https://dwm.suckless.org/patches/awesomebar/][awesomebar]] (Status bar toggles)
+- [[https://dwm.suckless.org/patches/vanitygaps/][vanitygaps]] (Gaps control)
+- [[https://dwm.suckless.org/patches/fullscreen/][fullscreen]] (Focus fullscreen patch)
+- [[https://dwm.suckless.org/patches/restartsig/][restartsig]] (Restart patch)
+- [[https://dwm.suckless.org/patches/swapfocus/][swapfocus]] (STACKKEYS for stack focus/push)
+- And many more script integrations.
+
+* Custom Scripts
+This configuration relies on several custom scripts for advanced functionality. They are not included in this repository and must be installed separately to their expected paths (usually =~/bin= or =/usr/local/bin= or =~/.local/bin/=).
+- =dmenunotes=, =dmenuvids=, =dmenuaudioswitch=, =dmenutemp=
+- =cliphist=, =rip=, =rec=, =define=, =wallpapermenu=
+- =vb=, =phototransfer=, =status-timer=
+- =screenshot=

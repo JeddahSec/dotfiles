@@ -1,0 +1,27 @@
+#!/bin/bash
+# # ~/.local/bin/recording-status
+#
+# if [ -f /tmp/recpid ]; then
+#     echo " REC"
+# else
+#     echo ""
+# fi
+
+#!/bin/bash
+if [ -f /tmp/recpid ] && kill -0 "$(cat /tmp/recpid)" 2>/dev/null; then
+    if [ -f /tmp/recstart ]; then
+        # Calculate elapsed time
+        start=$(cat /tmp/recstart)
+        now=$(date +%s)
+        elapsed=$((now - start))
+        mins=$((elapsed / 60))
+        secs=$((elapsed % 60))
+        printf " %02d:%02d" $mins $secs
+    else
+        echo " REC"
+    fi
+else
+    [ -f /tmp/recpid ] && rm -f /tmp/recpid
+    [ -f /tmp/recstart ] && rm -f /tmp/recstart
+    echo " READY"
+fi

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+record() {
+  # Toggle on mic
+  amixer set Capture toggle
+
+  # Get screen dimensions
+  screen_dim=$(xdpyinfo | awk '/dimensions:/{print $2}')
+  
+  # Check if we got valid screen dimensions
+  if [ -z "$screen_dim" ]; then
+    echo "Error: Could not detect screen dimensions"
+    notify-send -t 2000 -h string:bgcolor:#bf616a "Error: Could not detect screen dimensions"
+    exit 1
+  fi
+
+  # Record video
+  ffmpeg -s "$screen_dim" -f x11grab -r 30 -i :0.0 -c:v libx264 -qp 0 "$HOME/Videos/Video_$(date '+%a__%b%d__%H_%M_%S').mkv" &
+  echo $! > /tmp/recpid
+
+  # Record audio with noise reduction
+  ffmpeg -f alsa -i default -af "afftdn=nf=-75" "$HOME/Videos/Audio_$(date '+%a__%b%d__%H_%M_%S').wav" &
+  echo $! > /tmp/audpid
+
+  # Update DWM status bar
+  echo "🔴 REC" > /tmp/recordingicon
+  pkill -RTMIN+3 dwmblocks
+  
+  # Send notification
+  notify-send -t 1000 "Recording Started" "Screen recording is now active"
+}
+
+end() {
+  # Kill recording processes if they exist
+  if [ -f /tmp/recpid ]; then
+    kill -15 "$(cat /tmp/recpid)" 2>/dev/null
+  fi
+  
+  if [ -f /tmp/audpid ]; then
+    kill -15 "$(cat /tmp/audpid)" 2>/dev/null
+  fi
+  
+  # Clean up PID files
+  rm -f /tmp/recpid /tmp/audpid
+
+  # Toggle mic off
+  amixer set Capture toggle
+
+  # Update DWM status bar
+  echo "" > /tmp/recordingicon
+  pkill -RTMIN+3 dwmblocks
+
+  # Send notification
+  notify-send -t 1000 "Recording Stopped" "Screen recording saved to Videos folder"
+}
+
+# Main execution
+if [[ -f /tmp/recpid ]]; then
+  end
+else
+  record
+fi

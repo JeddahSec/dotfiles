@@ -1,0 +1,171 @@
+#!/bin/bash
+#
+# redshift-dmenu - Redshift control with dmenu for DWM
+# Integrates with pywal colors for consistent theming
+#
+
+# Set the path to ensure all commands are found
+export PATH="/usr/bin:/bin:/usr/local/bin:$HOME/.local/bin"
+
+# Configuration
+CACHE_DIR="${HOME}/.cache"
+WAL_CACHE="${CACHE_DIR}/wal"
+COLORS_FILE="${WAL_CACHE}/colors.sh"
+REDSHIFT_PID_FILE="${CACHE_DIR}/redshift.pid"
+TEMP_FILE="${CACHE_DIR}/current_redshift_temp"
+
+# Ensure necessary directories exist
+mkdir -p "$CACHE_DIR"
+
+# Check if required commands are available
+check_dependencies() {
+    local missing=()
+    for cmd in dmenu redshift notify-send; do
+        if ! command -v "$cmd" &> /dev/null; then
+            missing+=("$cmd")
+        fi
+    done
+    
+    if [ ${#missing[@]} -gt 0 ]; then
+        echo "Error: Missing required commands: ${missing[*]}"
+        exit 1
+    fi
+}
+
+# Load pywal colors if available
+load_wal_colors() {
+    if [ -f "$COLORS_FILE" ]; then
+        # shellcheck source=/dev/null
+        . "$COLORS_FILE"
+        return 0
+    else
+        # Fallback colors if pywal not configured
+        color0="#2E3440"   # Dark background
+        color1="#BF616A"   # Red
+        color2="#A3BE8C"   # Green
+        color7="#ECEFF4"   # Light foreground
+        color8="#4C566A"   # Light background
+        color15="#FFFFFF"  # White
+        echo "Pywal colors not found. Using fallback colors."
+        return 1
+    fi
+}
+
+# Get current redshift temperature if running
+get_current_temp() {
+    if pgrep -x "redshift" > /dev/null; then
+        current_temp=$(redshift -p 2>/dev/null | grep "Color temperature" | awk '{print $3}')
+        echo "$current_temp"
+        return 0
+    else
+        echo "off"
+        return 1
+    fi
+}
+
+# Stop redshift process
+stop_redshift() {
+    if [ -f "$REDSHIFT_PID_FILE" ]; then
+        kill -9 "$(cat "$REDSHIFT_PID_FILE")" 2>/dev/null
+        rm -f "$REDSHIFT_PID_FILE"
+    fi
+    pkill -x redshift
+    echo "off" > "$TEMP_FILE"
+    notify-send -t 2000 "Redshift" "Screen temperature reset to normal"
+}
+
+# Start redshift with specific temperature
+start_redshift() {
+    local temp=$1
+    stop_redshift
+    redshift -O "$temp" &
+    echo $! > "$REDSHIFT_PID_FILE"
+    echo "$temp" > "$TEMP_FILE"
+    notify-send -t 2000 "Redshift" "Screen temperature set to ${temp}K"
+}
+
+# Auto mode based on time of day
+auto_mode() {
+    stop_redshift
+    redshift -r -t 5500:3500 -l "$(curl -s "https://ipapi.co/json/" | jq -r '.latitude,.longitude' | tr '\n' ':')" &
+    echo $! > "$REDSHIFT_PID_FILE"
+    echo "auto" > "$TEMP_FILE"
+    notify-send -t 2000 "Redshift" "Auto mode enabled (5500K day → 3500K night)"
+}
+
+# Show menu with dmenu
+show_menu() {
+    local current_temp
+    current_temp=$(get_current_temp)
+    
+    # Menu options
+    local options=()
+    options+=("Auto - Time-based temperature")
+    options+=("Off - Reset to normal")
+    options+=("1000K - Very warm")
+    options+=("2500K - Warm light")
+    options+=("3500K - Incandescent")
+    options+=("4500K - Morning light")
+    options+=("5500K - Daylight")
+    options+=("6500K - Cool daylight")
+    
+    # Add indicator for current setting
+    local menu_title="Redshift: Current = ${current_temp}"
+    
+    # Use dmenu with pywal colors
+    local choice
+    choice=$(printf "%s\n" "${options[@]}" | dmenu -i -p "$menu_title" \
+        -nb "$color0" -nf "$color7" -sb "$color2" -sf "$color0" \
+        -fn "Monospace-12" -l 8)
+    
+    echo "$choice"
+}
+
+# Main execution
+main() {
+    check_dependencies
+    load_wal_colors
+    
+    local choice
+    choice=$(show_menu)
+    
+    if [ -z "$choice" ]; then
+        exit 0
+    fi
+    
+    case "$choice" in
+        "Auto - Time-based temperature")
+            auto_mode
+            ;;
+        "Off - Reset to normal")
+            stop_redshift
+            ;;
+        "1000K - Very warm")
+            start_redshift 1000
+            ;;
+        "2500K - Warm light")
+            start_redshift 2500
+            ;;
+        "3500K - Incandescent")
+            start_redshift 3500
+            ;;
+        "4500K - Morning light")
+            start_redshift 4500
+            ;;
+        "5500K - Daylight")
+            start_redshift 5500
+            ;;
+        "6500K - Cool daylight")
+            start_redshift 6500
+            ;;
+        *)
+            echo "Unknown option: $choice"
+            exit 1
+            ;;
+    esac
+}
+
+# Handle script execution
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi

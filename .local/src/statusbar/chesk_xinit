@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Define the code block to insert
+CODE_BLOCK='
+# Pywal/Xresources settings
+ln -sf ~/.cache/wal/colors.Xresources ~/.Xresources
+cat ~/.Xresources ~/.cache/wal/xrdb_extra | xrdb -merge
+xdotool key super+ctrl+backslash # xrdb refresh keybind
+'
+
+# File to check
+XINITRC_FILE="$HOME/.xinitrc"
+
+# Check if the code block is already in the file
+if ! grep -q "xdotool key super+ctrl+backslash" "$XINITRC_FILE"; then
+    echo "Adding Pywal configuration to $XINITRC_FILE"
+    echo "$CODE_BLOCK" >> "$XINITRC_FILE"
+else
+    echo "Pywal configuration already exists in $XINITRC_FILE"
+fi
+
+# Continuous monitoring version (commented out by default)
+# Uncomment the while loop if you want continuous monitoring
+: '
+while true; do
+    if ! grep -q "xdotool key super+ctrl+backslash" "$XINITRC_FILE"; then
+        echo "Adding Pywal configuration to $XINITRC_FILE"
+        echo "$CODE_BLOCK" >> "$XINITRC_FILE"
+    fi
+    sleep 60  # Check every minute
+done
+'

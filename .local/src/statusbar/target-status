@@ -1,0 +1,20 @@
+#!/bin/bash
+
+TARGET_FILE="$HOME/.target"
+
+get_target_status() {
+    if [[ -f "$TARGET_FILE" && -s "$TARGET_FILE" ]]; then
+        local target_content=$(cat "$TARGET_FILE" | xargs)
+        
+        # Check if it looks like an HTB target format
+        if [[ "$target_content" =~ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+.*-.* ]]; then
+            echo " $target_content"
+        else
+            echo " Invalid target format"
+        fi
+    else
+        echo " No target"
+    fi
+}
+
+get_target_status

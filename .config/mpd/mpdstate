@@ -1,0 +1,37 @@
+sw_volume: 18
+audio_device_state:1:pulse audio
+audio_device_state:1:my_fifo
+state: stop
+current: 1
+random: 0
+repeat: 0
+single: 0
+consume: 0
+crossfade: 0
+mixrampdb: 0
+mixrampdelay: -1
+lastloadedplaylist: 
+playlist_begin
+0:playlists/aespa (에스파) 'Drama' Official Audio.mp3
+1:playlists/aespa (에스파) - Spicy (Audio).mp3
+2:playlists/Countdown (3, 2, 1).mp3
+3:playlists/Hailee Steinfeld Alesso .ogg
+4:playlists/Hello Zepp Awakening - Saw 2020 Mix [9n9z2WDY8oQ].mp3
+5:playlists/Imagine Dragons Khalid.ogg
+6:playlists/Jason Dy - Magsabi Ka Lang (Lyrics).mp3
+7:playlists/Magnetic.mp3
+8:playlists/Martin Solveig - All Stars Off.ogg
+9:playlists/NCT Dream - Love Again ( Audio ).mp3
+10:playlists/NCT DREAM 'Dreaming' (Official Audio)  Universe - The 3rd Album.mp3
+11:playlists/NCT DREAM 'Rewind' (Official Audio)  Glitch Mode - The 2nd Album.mp3
+12:playlists/Sigma Boy (Сигма Бой) [HXoahG4iqTs].webm
+13:playlists/aespa (에스파) - Spicy (Audio).mp3
+14:playlists/aespa (에스파) 'Drama' Official Audio.mp3
+15:playlists/Ariana Grande - we can't be friends (wait for your love) (lyric visualizer).mp3
+16:playlists/Countdown (3, 2, 1).mp3
+17:playlists/Countdown (3, 2, 1).mp3
+18:playlists/Hailee Steinfeld Alesso .ogg
+19:playlists/Hello Zepp Awakening - Saw 2020 Mix [9n9z2WDY8oQ].mp3
+20:playlists/Janji - Heroes Tonight.mp3
+21:playlists/Janji - Heroes Tonight.mp3
+playlist_end

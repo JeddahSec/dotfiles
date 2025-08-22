@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Configuration
+API_KEY="API_KEY"  # Replace with your actual API key
+CITY="Jeddah"              # Replace with your city
+UNITS="metric"               # metric for Celsius, imperial for Fahrenheit
+LANG="en"                    # Language for weather description
+
+# API URL
+URL="https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=${UNITS}&lang=${LANG}&appid=${API_KEY}"
+
+# Get weather data
+weather_data=$(curl -s "$URL")
+
+# # Check if API call was successful
+if [[ -z "$weather_data" ]]; then
+    echo " Weather NA"
+    exit 1
+fi
+
+# Parse JSON data (using jq - install with your package manager if needed)
+temp=$(echo "$weather_data" | jq '.main.temp')
+condition=$(echo "$weather_data" | jq -r '.weather[0].description')
+icon_code=$(echo "$weather_data" | jq -r '.weather[0].icon')
+humidity=$(echo "$weather_data" | jq '.main.humidity')
+wind_speed=$(echo "$weather_data" | jq '.wind.speed')
+
+# Map icon codes to Nerd Font icons
+case $icon_code in
+    "01d") icon="";;  # clear sky day
+    "01n") icon="";;  # clear sky night
+    "02d") icon="";;  # few clouds day
+    "02n") icon="";;  # few clouds night
+    "03d"|"03n") icon="";;  # scattered clouds
+    "04d"|"04n") icon="";;  # broken clouds
+    "09d"|"09n") icon="";;  # shower rain
+    "10d"|"10n") icon="";;  # rain
+    "11d"|"11n") icon="";;  # thunderstorm
+    "13d"|"13n") icon="";;  # snow
+    "50d"|"50n") icon="";;  # mist
+    *) icon="";;        # unknown
+esac
+
+# Format output
+# echo "$icon ${temp%.*}°C  ${humidity}%  ${wind_speed}m/s"
+echo "$icon ${temp%.*}°C ${condition^}"
+# Alternative without humidity and wind: echo "$icon ${temp%.*}°C ${condition^}"

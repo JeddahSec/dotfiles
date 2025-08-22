@@ -1,0 +1,33 @@
+#+TITLE: My Dotfiles
+#+AUTHOR: (JS) JeddahSec
+
+* Table of Contents :toc:
+- [[#what-are-dotfiles][What Are Dotfiles?]]
+- [[#my-window-manager-configs][My Window Manager Configs]]
+- [[#other-popular-configs-of-mine][Other Popular Configs Of Mine]]
+- [[#who-am-i][Who Am I?]]
+
+* What Are Dotfiles?
+Dotfiles are plain-text configuration files (prefixed with a dot, like =.bashrc= or =.vimrc=) used to personalize and control the behavior of your operating system, command-line shell, and applications on Linux and other Unix-based systems (like macOS).
+
+* My Window Manager Configs
+| DWM |Qtile|XMonad|Hyprland|
+
+* Other Popular Configs Of Mine
+| Dmenu     | Fish                | St  | Emacs | Neovim |
+| Rofi      | Shell Color Scripts | Zsh | Dunst | Picom  |
+| Dwmblocks | Scripts             |     |       |        |
+
+* Who Am I?
+By day, I shape the future as a *High School Teacher*, imparting knowledge and curiosity to the next generation.
+By night, I am a passionate *Cybersecurity Enthusiast* and aspiring ethical hacker. I am deeply fascinated by the world of infosec, from penetration testing and vulnerability research to digital forensics and the ever-evolving threat landscape.
+This repository is a reflection of that journey—a collection of the tools, configurations, and scripts that power my exploration into the digital depths.
+
+- *Vocation:* Educator
+- *Obsession:* Cybersecurity & Ethical Hacking
+- *Motto:* *Always Learning, Always Testing.*
+
+This repository serves a triple function
+1) As a place to point viewers who ask me for my configs.
+2) As a learning resource for those that wish to study my configs.
+3) As a backup and restore option for myself should the need arise.

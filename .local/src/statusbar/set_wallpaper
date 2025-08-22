@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+ln -sf "$1" ~/.background_image
+xwallpaper --bg-fill ~/.background_image
