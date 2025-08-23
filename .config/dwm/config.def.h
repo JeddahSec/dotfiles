@@ -263,7 +263,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,		XK_w,      spawn,       {.v = (const char*[]){ "wallpapermenu", NULL } } },
 	{ MODKEY,				XK_F1,     spawn,       SHCMD("screenshot") },
 	{ MODKEY|ControlMask,				XK_F12,     spawn,       SHCMD("redshift-dmenu") },
-	{ MODKEY,				XK_F9,     spawn,       SHCMD("screenrecorder") },
+	{ MODKEY,				XK_F9,     spawn,       SHCMD("dmenu_shutdown_reboot") },
 	{ MODKEY,				XK_F10,     spawn,       SHCMD("screenrecorder") },
 	{ MODKEY|ShiftMask,		XK_F1,     spawn,       SHCMD("screenshot color") },
 	{ MODKEY,				XK_F2,     spawn,       {.v = (const char*[]){ "vb", NULL } } },
