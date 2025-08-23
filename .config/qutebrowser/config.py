@@ -108,6 +108,7 @@ config.bind('tT', 'config-cycle tabs.position top left')
 config.bind('gJ', 'tab-move +')
 config.bind('gK', 'tab-move -')
 config.bind('gm', 'tab-move')
+config.bind('Z', 'hint links spawn st -e youtube-dl {hint-url}')
 
 # dark mode setup
 c.colors.webpage.darkmode.enabled = True
@@ -124,7 +125,7 @@ c.tabs.width = '7%'
 
 # fonts
 c.fonts.default_family = []
-c.fonts.default_size = '16pt'
+c.fonts.default_size = '15pt'
 c.fonts.web.family.fixed = 'monospace'
 c.fonts.web.family.sans_serif = 'monospace'
 c.fonts.web.family.serif = 'monospace'
@@ -139,6 +140,7 @@ config.set("content.geolocation", False)
 config.set("content.webrtc_ip_handling_policy", "default-public-interface-only")
 config.set("content.cookies.accept", "all")
 config.set("content.cookies.store", True)
+config.set('zoom.default', '200%')
 # config.set("content.javascript.enabled", False) # tsh keybind to toggle
 
 # Adblocking info -->
