@@ -1,0 +1,198 @@
+/* qutebrowser global stylesheet using your pywal palette */
+
+/* === PALETTE === */
+:root {
+    --color0: #0d1a1f;
+    --color1: #986440;
+    --color2: #7C827B;
+    --color3: #A28C6E;
+    --color4: #377685;
+    --color5: #687985;
+    --color6: #75878F;
+    --color7: #c2c5c7;
+    --color8: #5c6c71;
+    --color9: #986440;
+    --color10: #7C827B;
+    --color11: #A28C6E;
+    --color12: #377685;
+    --color13: #687985;
+    --color14: #75878F;
+    --color15: #c2c5c7;
+  /* Semantic shortcuts */
+  --bg:     var(--color0);
+  --fg:     var(--color7);
+  --muted:  var(--color8);
+  --accent: var(--color4);
+  --success:var(--color2);
+  --warning:var(--color3);
+  --danger: var(--color1);
+  --highlight-bg: rgba(193,194,197,0.1);
+}
+
+/* === BASIC STYLES === */
+html, body {
+  background-color: var(--bg) !important;
+  color: var(--fg) !important;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+body, p, li, span, div, a, h1, h2, h3, h4, h5, h6 {
+  background-color: var(--bg) !important;
+  /* color: var(--fg) !important; */
+  background: transparent !important;
+}
+
+/* === LINKS === */
+a, a:link, a:visited {
+  color: var(--accent) !important;
+  /* text-decoration: underline !important; */
+  text-decoration: none !important;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+a:hover, a:active {
+  color: var(--success) !important;
+  text-decoration: none !important;
+}
+
+/* === HEADINGS === */
+h1,h2,h3,h4,h5,h6 {
+  color: var(--fg) !important;
+  font-weight: 600 !important;
+}
+
+/* === CODE BLOCKS === */
+code, pre, kbd, samp {
+  color: var(--fg) !important;
+  background: rgba(255,255,255,0.04) !important;
+  border-radius: 4px !important;
+  padding: .1em .3em !important;
+}
+pre, code[class*="language-"] {
+  background: rgba(255,255,255,0.02) !important;
+  border: 1px solid rgba(255,255,255,0.03) !important;
+}
+
+/* === INPUTS === */
+button, input, textarea, select {
+  background-color: rgba(255,255,255,0.025) !important;
+  color: var(--fg) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  border-radius: 4px !important;
+}
+button:hover, input:hover, textarea:hover {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+:focus {
+  outline: 2px solid var(--bg) !important;
+  outline-offset: 1px !important;
+}
+
+/* === TABLES === */
+table, th, td {
+  border-color: rgba(255,255,255,0.03) !important;
+  color: var(--fg) !important;
+}
+th {
+  background: rgba(255,255,255,0.02) !important;
+}
+
+/* === QUOTES === */
+blockquote {
+  border-left: 4px solid var(--muted) !important;
+  padding-left: 1em !important;
+  color: var(--muted) !important;
+  background: rgba(255,255,255,0.01) !important;
+}
+
+/* === SELECTION === */
+::selection {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+}
+
+/* === SCROLLBARS === */
+::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.01) !important;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06) !important;
+  border-radius: 8px !important;
+}
+
+/* === IMAGES === */
+img {
+  filter: none !important; /* do NOT modify images now */
+  opacity: 1 !important;
+}
+
+/* === HEADERS / NAVS === */
+header, nav, footer, .navbar, .header, .site-header, .site-footer {
+  background: rgba(255,255,255,0.02) !important;
+  color: var(--fg) !important;
+}
+
+/* === BADGES & LABELS === */
+.badge, .tag, .label {
+  background: var(--muted) !important;
+  color: var(--bg) !important;
+}
+
+/* === ALERTS === */
+.alert, .error, .warning, .notice {
+  border-left: 4px solid var(--warning) !important;
+  background: rgba(255,255,255,0.01) !important;
+}
+
+/* === SAFE BACKGROUND HANDLING === */
+
+/* Keep normal images intact, but override very bright page backgrounds */
+body,
+.main-container,
+[role="main"] {
+  background-color: var(--bg) !important;
+}
+
+/* Remove *bright solid colors*, but DO NOT block images or avatars */
+div:not([role="img"]):not(.css-1dbjc4n):not(.r-1adg3ll)[style*="background-color"] {
+  background-color: transparent !important;
+}
+
+/* === TEXT COLOR FIX === */
+*[style*="color"] {
+  color: var(--fg) !important;
+}
+
+/* === KEEP BACKGROUND-IMAGE VISIBLE === */
+/* DO NOT remove background-image anymore */
+
+
+
+/* === YOUTUBE VIDEO PLAYER === */
+.ytp-progress-bar, .ytp-play-progress {
+  background-color: rgba(255, 255, 255, 0.8) !important; /* Change to a visible color */
+}
+
+.ytp-scrubber-container {
+  background-color: rgba(255, 255, 255, 1) !important; /* Adjust the background for better visibility */
+}
+
+.ytp-time-display {
+  color: var(--fg) !important; /* Ensure the time text is visible */
+}
+
+/* === X.COM VIDEO PLAYER === */
+.video-player .progress-bar {
+  background-color: rgba(255, 255, 255, 0.8) !important; /* Change to a visible color */
+}
+
+.video-player .play-progress {
+  background-color: rgba(255, 255, 255, 0.8) !important; /* Ensure the play progress is visible */
+}
+
+.video-player .time-display {
+  color: var(--fg) !important; /* Ensure the time text is visible */
+}

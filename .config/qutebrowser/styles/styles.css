@@ -1,0 +1,180 @@
+/* qutebrowser global stylesheet using your pywal palette */
+
+/* === PALETTE === */
+:root {
+
+  
+    /* Special */
+    --background: #121419;
+    --foreground: #c3c4c5;
+    --cursor: #c3c4c5;
+
+    /* Colors */
+    --color0: #121419;
+    --color1: #616869;
+    --color2: #BCB374;
+    --color3: #A27087;
+    --color4: #5C97A4;
+    --color5: #5FB0E1;
+    --color6: #A1AEAB;
+    --color7: #c3c4c5;
+    --color8: #5c6470;
+    --color9: #616869;
+    --color10: #BCB374;
+    --color11: #A27087;
+    --color12: #5C97A4;
+    --color13: #5FB0E1;
+    --color14: #A1AEAB;
+    --color15: #c3c4c5;
+    /* Special */
+    --background: #0e1721;
+    --foreground: #c2c5c7;
+    --cursor: #c2c5c7;
+
+  /* Semantic shortcuts */
+  --bg:     var(--color0);
+  --fg:     var(--color7);
+  --muted:  var(--color8);
+  --accent: var(--color4);
+  --success:var(--color2);
+  --warning:var(--color3);
+  --danger: var(--color1);
+  --highlight-bg: rgba(193,194,197,0.1);
+}
+
+/* === BASIC STYLES === */
+html, body {
+  background-color: var(--bg) !important;
+  color: var(--fg) !important;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+body, p, li, span, div, a, h1, h2, h3, h4, h5, h6 {
+  background-color: var(--bg) !important;
+  /* color: var(--fg) !important; */
+  background: transparent !important;
+}
+
+/* === LINKS === */
+a, a:link, a:visited {
+  color: var(--accent) !important;
+  /* text-decoration: underline !important; */
+  text-decoration: none !important;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+a:hover, a:active {
+  color: var(--success) !important;
+  text-decoration: none !important;
+}
+
+/* === HEADINGS === */
+h1,h2,h3,h4,h5,h6 {
+  color: var(--fg) !important;
+  font-weight: 600 !important;
+}
+
+/* === CODE BLOCKS === */
+code, pre, kbd, samp {
+  color: var(--fg) !important;
+  background: rgba(255,255,255,0.04) !important;
+  border-radius: 4px !important;
+  padding: .1em .3em !important;
+}
+pre, code[class*="language-"] {
+  background: rgba(255,255,255,0.02) !important;
+  border: 1px solid rgba(255,255,255,0.03) !important;
+}
+
+/* === INPUTS === */
+button, input, textarea, select {
+  background-color: rgba(255,255,255,0.025) !important;
+  color: var(--fg) !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+  border-radius: 4px !important;
+}
+button:hover, input:hover, textarea:hover {
+  border-color: rgba(255,255,255,0.08) !important;
+}
+:focus {
+  outline: 2px solid var(--bg) !important;
+  outline-offset: 1px !important;
+}
+
+/* === TABLES === */
+table, th, td {
+  border-color: rgba(255,255,255,0.03) !important;
+  color: var(--fg) !important;
+}
+th {
+  background: rgba(255,255,255,0.02) !important;
+}
+
+/* === QUOTES === */
+blockquote {
+  border-left: 4px solid var(--muted) !important;
+  padding-left: 1em !important;
+  color: var(--muted) !important;
+  background: rgba(255,255,255,0.01) !important;
+}
+
+/* === SELECTION === */
+::selection {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+}
+
+/* === SCROLLBARS === */
+::-webkit-scrollbar {
+  width: 12px !important;
+  height: 12px !important;
+}
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.01) !important;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.06) !important;
+  border-radius: 8px !important;
+}
+
+/* === IMAGES === */
+img {
+  filter: none !important; /* do NOT modify images now */
+  opacity: 1 !important;
+}
+
+/* === HEADERS / NAVS === */
+header, nav, footer, .navbar, .header, .site-header, .site-footer {
+  background: rgba(255,255,255,0.02) !important;
+  color: var(--fg) !important;
+}
+
+/* === BADGES & LABELS === */
+.badge, .tag, .label {
+  background: var(--muted) !important;
+  color: var(--bg) !important;
+}
+
+/* === ALERTS === */
+.alert, .error, .warning, .notice {
+  border-left: 4px solid var(--warning) !important;
+  background: rgba(255,255,255,0.01) !important;
+}
+
+/* === SAFE BACKGROUND HANDLING === */
+
+/* Keep normal images intact, but override very bright page backgrounds */
+body,
+.main-container,
+[role="main"] {
+  background-color: var(--bg) !important;
+}
+
+/* Remove *bright solid colors*, but DO NOT block images or avatars */
+div:not([role="img"]):not(.css-1dbjc4n):not(.r-1adg3ll)[style*="background-color"] {
+  background-color: transparent !important;
+}
+
+/* === TEXT COLOR FIX === */
+*[style*="color"] {
+  color: var(--fg) !important;
+}

@@ -1,4 +1,4 @@
-#+title: Emacs From Scratch Configuration
+#+ti: Emacs From Scratch Configuration
 #+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
 
 * Welcome!
@@ -15,11 +15,11 @@ The following variables are used to tweak some of the configuration pieces for u
   ;;       in Emacs and init.el will be generated automatically!
 
   ;; You will most likely need to adjust this font size for your system!
-  (defvar efs/default-font-size 240)
-  (defvar efs/default-variable-font-size 240)
+  (defvar efs/default-font-size 220)
+  (defvar efs/default-variable-font-size 220)
 
   ;; Make frame transparency overridable
-  (defvar efs/frame-transparency '(60 . 60))
+  (defvar efs/frame-transparency '(70 . 70))
 
 #+end_src
 
@@ -217,8 +217,11 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+begin_src emacs-lisp
 
-  (use-package command-log-mode
-    :commands command-log-mode)
+    (use-package command-log-mode
+      :commands command-log-mode)
+
+  (setq make-backup-files nil)
+
 
 #+end_src
 
@@ -228,9 +231,12 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
 
 #+begin_src emacs-lisp
 
-;; (use-package doom-themes
-  ;; :init (load-theme 'doom-palenight t))
-  ;; :init (load-theme 'doom-gruvbox t))
+  (use-package doom-themes
+    ;; :init (load-theme 'doom-palenight t))
+    :init (load-theme 'doom-one t))
+    ;; :init (load-theme 'doom-challenger-deep t))
+    ;; :init (load-theme 'doom-monokai-pro t))
+    ;; :init (load-theme 'doom-monokai-octagon t))
 
 #+end_src
 
@@ -938,7 +944,7 @@ Make sure that you have the [[https://github.com/akermu/emacs-libvterm/#requirem
     :commands vterm
     :config
     (setq term-prompt-regexp "^[^#$%>\n]*[#$%>] *")  ;; Set this to match your custom shell prompt
-    ;;(setq vterm-shell "zsh")                       ;; Set this to customize the shell to launch
+    (setq vterm-shell "zsh")                       ;; Set this to customize the shell to launch
     (setq vterm-max-scrollback 10000))
 
 #+end_src
@@ -1093,12 +1099,11 @@ Dired is a built-in file manager for Emacs that does some pretty amazing things!
     :custom ((dired-listing-switches "-agho --group-directories-first"))
     :config
     (evil-collection-define-key 'normal 'dired-mode-map
-       "h" 'dired-single-up-directory
-       "l" 'dired-single-buffer))
+      "h" 'dired-single-up-directory
+      "l" 'dired-single-buffer))
 
-  ;; (use-package dired-single
-   ;;  :commands (dired dired-jump))
-
+  ;(use-package dired-single
+  ; :commands (dired dired-jump))
   (use-package all-the-icons-dired
     :hook (dired-mode . all-the-icons-dired-mode))
 
@@ -1157,20 +1162,20 @@ Dial the GC threshold back down so that garbage collection happens more frequent
   (general-evil-setup)
   
   ;; set up 'SPC' as the global leader key
-  (general-create-definer dt/leader-keys
+  (general-create-definer js/leader-keys
     :states '(normal insert visual emacs)
     :keymaps 'override
     :prefix "SPC" ;; set leader
     :global-prefix "M-SPC") ;; access leader in insert mode
 
-  (dt/leader-keys
+  (js/leader-keys
     "SPC" '(counsel-M-x :wk "Counsel M-x")
     "." '(find-file :wk "Find file")
     "=" '(perspective-map :wk "Perspective") ;; Lists all the perspective keybindings
     "TAB TAB" '(comment-line :wk "Comment lines")
     "u" '(universal-argument :wk "Universal argument"))
 
-   (dt/leader-keys
+   (js/leader-keys
     "a" '(:ignore t :wk "A.I.")
     "a a" '(ellama-ask-about :wk "Ask ellama about region")
     "a e" '(:ignore t :wk "Ellama enhance")
@@ -1181,7 +1186,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "a s" '(ellama-summarize :wk "Ellama summarize region")
     "a t" '(ellama-translate :wk "Ellama translate region"))
    
-  (dt/leader-keys
+  (js/leader-keys
     "b" '(:ignore t :wk "Bookmarks/Buffers")
     "b b" '(switch-to-buffer :wk "Switch to buffer")
     "b c" '(clone-indirect-buffer :wk "Create indirect buffer copy in a split")
@@ -1200,7 +1205,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "b S" '(save-some-buffers :wk "Save multiple buffers")
     "b w" '(bookmark-save :wk "Save current bookmarks to bookmark file"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "d" '(:ignore t :wk "Dired")
     "d d" '(dired :wk "Open dired")
     "d f" '(wdired-finish-edit :wk "Writable dired finish edit")
@@ -1209,7 +1214,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "d p" '(peep-dired :wk "Peep-dired")
     "d w" '(wdired-change-to-wdired-mode :wk "Writable dired"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "e" '(:ignore t :wk "Ediff/Eshell/Eval/EWW")    
     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
     "e d" '(eval-defun :wk "Evaluate defun containing or after point")
@@ -1224,7 +1229,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "e s" '(eshell :which-key "Eshell")
     "e w" '(eww :which-key "EWW emacs web wowser"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "f" '(:ignore t :wk "Files")    
     "f c" '((lambda () (interactive)
               (find-file "~/.config/emacs/config.org")) 
@@ -1243,7 +1248,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "f u" '(sudo-edit-find-file :wk "Sudo find file")
     "f U" '(sudo-edit :wk "Sudo edit file"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "g" '(:ignore t :wk "Git")    
     "g /" '(magit-displatch :wk "Magit dispatch")
     "g ." '(magit-file-displatch :wk "Magit file dispatch")
@@ -1266,7 +1271,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "g t" '(git-timemachine :wk "Git time machine")
     "g u" '(magit-stage-file :wk "Git unstage file"))
 
- (dt/leader-keys
+ (js/leader-keys
     "h" '(:ignore t :wk "Help")
     "h a" '(counsel-apropos :wk "Apropos")
     "h b" '(describe-bindings :wk "Describe bindings")
@@ -1301,7 +1306,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "h w" '(where-is :wk "Prints keybinding for command if set")
     "h x" '(describe-command :wk "Display full documentation for command"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "m" '(:ignore t :wk "Org")
     "m a" '(org-agenda :wk "Org agenda")
     "m e" '(org-export-dispatch :wk "Org export dispatch")
@@ -1310,15 +1315,15 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "m B" '(org-babel-tangle :wk "Org babel tangle")
     "m T" '(org-todo-list :wk "Org todo list"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "m b" '(:ignore t :wk "Tables")
     "m b -" '(org-table-insert-hline :wk "Insert hline in table"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "m d" '(:ignore t :wk "Date/deadline")
     "m d t" '(org-time-stamp :wk "Org time stamp"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "o" '(:ignore t :wk "Open")
     "o d" '(dashboard-open :wk "Dashboard")
     "o e" '(elfeed :wk "Elfeed RSS")
@@ -1327,17 +1332,17 @@ Dial the GC threshold back down so that garbage collection happens more frequent
 
   ;; projectile-command-map already has a ton of bindings 
   ;; set for us, so no need to specify each individually.
-  (dt/leader-keys
+  (js/leader-keys
     "p" '(projectile-command-map :wk "Projectile"))
   
-  (dt/leader-keys
+  (js/leader-keys
     "r" '(:ignore t :wk "Radio")
     "r p" '(eradio-play :wk "Eradio play")
     "r s" '(eradio-stop :wk "Eradio stop")
     "r t" '(eradio-toggle :wk "Eradio toggle"))
 
 
-  (dt/leader-keys
+  (js/leader-keys
     "s" '(:ignore t :wk "Search")
     "s d" '(dictionary-search :wk "Search dictionary")
     "s m" '(man :wk "Man pages")
@@ -1345,7 +1350,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "s t" '(tldr :wk "Lookup TLDR docs for a command")
     "s w" '(woman :wk "Similar to man but doesn't require man"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "t" '(:ignore t :wk "Toggle")
     "t e" '(eshell-toggle :wk "Toggle eshell")
     "t f" '(flycheck-mode :wk "Toggle flycheck")
@@ -1356,7 +1361,7 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "t t" '(visual-line-mode :wk "Toggle truncated lines")
     "t v" '(vterm-toggle :wk "Toggle vterm"))
 
-  (dt/leader-keys
+  (js/leader-keys
     "w" '(:ignore t :wk "Windows/Words")
     ;; Window splits
     "w c" '(evil-window-delete :wk "Close window")
@@ -1379,8 +1384,58 @@ Dial the GC threshold back down so that garbage collection happens more frequent
     "w u" '(upcase-word :wk "Upcase word")
     "w =" '(count-words :wk "Count words/lines for buffer"))
 )
+#+end_src
+
+
+* Eshell
+Eshell is an Emacs 'Shell' that is written in Elisp.
+
+#+begin_src emacs-lisp
+  
+;; Disabling company mode in eshell, because it's annoying.
+(setq company-global-modes '(not eshell-mode))
+
+;; Adding a keybinding for 'pcomplete-list' on F9 key.
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (define-key eshell-mode-map (kbd "<f9>") #'pcomplete-list)))
+
+;; A function for easily creating multiple buffers of 'eshell'.
+;; NOTE: `C-u M-x eshell` would also create new 'eshell' buffers.
+(defun eshell-new (name)
+  "Create new eshell buffer named NAME."
+  (interactive "sName: ")
+  (setq name (concat "$" name))
+  (eshell)
+  (rename-buffer name))
+
+(use-package eshell-toggle
+  :custom
+  (eshell-toggle-size-fraction 3)
+  (eshell-toggle-use-projectile-root t)
+  (eshell-toggle-run-command nil)
+  (eshell-toggle-init-function #'eshell-toggle-init-ansi-term))
+
+  (use-package eshell-syntax-highlighting
+    :after esh-mode
+    :config
+    (eshell-syntax-highlighting-global-mode +1))
+
+  ;; eshell-syntax-highlighting -- adds fish/zsh-like syntax highlighting.
+  ;; eshell-rc-script -- your profile for eshell; like a bashrc for eshell.
+  ;; eshell-aliases-file -- sets an aliases file for the eshell.
+
+  (setq eshell-rc-script (concat user-emacs-directory "eshell/profile")
+        eshell-aliases-file (concat user-emacs-directory "eshell/aliases")
+        eshell-history-size 5000
+        eshell-buffer-maximum-lines 5000
+        eshell-hist-ignoredups t
+        eshell-scroll-to-bottom-on-input t
+        eshell-destroy-buffer-when-process-dies t
+        eshell-visual-commands'("bash" "fish" "htop" "ssh" "top" "zsh"))
 
 #+end_src
+
 
 ** Zooming In/Out
 You can use the bindings CTRL plus =/- for zooming in/out.  You can also use CTRL plus the 
@@ -1435,29 +1490,272 @@ Emacs has built-in programming language modes for Lisp, Scheme, DSSSL, Ada, ASM,
 
 #+end_src
 
-* MINIBUFFER ESCAPE
-By default, Emacs requires you to hit ESC three times to escape quit the minibuffer.  
+** Vterm
+Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets the shell to be used in M-x shell, M-x term, M-x ansi-term and M-x vterm.  By default, the shell is set to 'fish' but could change it to 'bash' or 'zsh' if you prefer.
 
 #+begin_src emacs-lisp
-(global-set-key [escape] 'keyboard-escape-quit)
+;;(use-package vterm
+;;  :ensure t
+;;  :config
+;;  (setq shell-file-name "/bin/zsh"
+;;        vterm-max-scrollback 5000))
 #+end_src
 
-* MODELINE
-The modeline is the bottom status bar that appears in Emacs windows.  While you can create your own custom modeline, why go to the trouble when Doom Emacs already has a nice modeline package available.  For more information on what is available to configure in the Doom modeline, check out: [[https://github.com/seagle0128/doom-modeline][Doom Modeline]]
+** Vterm-Toggle 
+[[https://github.com/jixiuf/vterm-toggle][vterm-toggle]] toggles between the vterm buffer and whatever buffer you are editing.
 
 #+begin_src emacs-lisp
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1)
+  (use-package vterm-toggle
+    :ensure t
+    :after vterm
+    :config
+    ;; When running programs in Vterm and in 'normal' mode, make sure that ESC
+    ;; kills the program as it would in most standard terminal programs.
+    (evil-define-key 'normal vterm-mode-map (kbd "<escape>") 'vterm--self-insert)
+    (setq vterm-toggle-fullscreen-p nil)
+    (setq vterm-toggle-scope 'project)
+    (add-to-list 'display-buffer-alist
+                 '((lambda (buffer-or-name _)
+                       (let ((buffer (get-buffer buffer-or-name)))
+                         (with-current-buffer buffer
+                           (or (equal major-mode 'vterm-mode)
+                               (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                    (display-buffer-reuse-window display-buffer-at-bottom)
+                    (display-buffer-reuse-window display-buffer-in-direction)
+                    display-buffer-in-direction/direction/dedicated is added in emacs27
+                    (direction . bottom)
+                    (dedicated . t) ;dedicated is supported in emacs27
+                    (reusable-frames . visible)
+                    (window-height . 0.4))))
+
+#+end_src
+
+* SUDO EDIT
+[[https://github.com/nflath/sudo-edit][sudo-edit]] gives us the ability to open files with sudo privileges or switch over to editing with sudo privileges if we initially opened the file without such privileges.
+
+#+begin_src emacs-lisp
+(use-package sudo-edit)
+#+end_src
+
+#+begin_src emacs-lisp
+(dolist (mode '(term-mode-hook vterm-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode -1))))   
+#+end_src
+
+
+* C/C++ IDE
+Here is a bare-bones lsp-mode/dap-mode configuration template to get you started with your own lsp-mode config, or to try out in a separate one-off session. Please note that Emacs configuration frameworks such as Spacemacs or Doom Emacs often ship with lsp-mode settings of their own; should you be using such a framework, and find that lsp-mode doesn't behave as intended, please make sure to follow this tutorial from a clean starting point. in your config or you could run in separate session.
+#+begin_src emacs-lisp
+(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs helm-lsp
+    projectile hydra flycheck company avy which-key helm-xref dap-mode))
+
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+
+;; sample `helm' configuration use https://github.com/emacs-helm/helm/ for details
+(helm-mode)
+(require 'helm-xref)
+(define-key global-map [remap find-file] #'helm-find-files)
+(define-key global-map [remap execute-extended-command] #'helm-M-x)
+(define-key global-map [remap switch-to-buffer] #'helm-mini)
+
+(which-key-mode)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 1
+      lsp-idle-delay 0.1)  ;; clangd is fast
+
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (require 'dap-cpptools)
+  (yas-global-mode))
+
+#+end_src
+
+* Full Emacs Configuration (package.el version)
+
+Copy this into your init.el:
+
+#+begin_src emacs-lisp
+;; ----------------------------------------------------------
+;; LSP Mode Core
+;; ----------------------------------------------------------
+(use-package lsp-mode
+  :init
+  ;; Set preferred LSP keybindings prefix
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((html-mode . lsp)
+         (css-mode . lsp)
+         (js-mode . lsp)
+         (typescript-mode . lsp)
+         (web-mode . lsp))
+  :commands lsp)
+
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode)
   :config
-  (setq doom-modeline-height 35      ;; sets modeline height
-        doom-modeline-bar-width 5    ;; sets right bar width
-        doom-modeline-persp-name t   ;; adds perspective name to modeline
-        doom-modeline-persp-icon t)) ;; adds folder icon next to persp name
+  (setq lsp-ui-doc-delay 0.3
+        lsp-ui-doc-position 'bottom))
+
+;; ----------------------------------------------------------
+;; Completion
+;; ----------------------------------------------------------
+;;(use-package company
+;;  :hook (after-init . global-company-mode)
+;;  :config (setq company-minimum-prefix-length 1
+;;                company-idle-delay 0.0))
+
+;; ----------------------------------------------------------
+;; HTML / CSS / JS modes
+;; ----------------------------------------------------------
+(use-package web-mode
+  :mode ("\\.html?\\'" "\\.css\\'" "\\.js\\'" "\\.ts\\'" "\\.jsx\\'" "\\.tsx\\'")
+  :config
+  (setq web-mode-enable-auto-quoting t
+        web-mode-enable-auto-indentation t))
+
+;; ----------------------------------------------------------
+;; LSP specific server configs (optional)
+;; ----------------------------------------------------------
+(setq lsp-clients-css-server "vscode-css-language-server"
+      lsp-clients-html-server "vscode-html-language-server"
+      lsp-clients-json-server "vscode-json-language-server")
 
 #+end_src
 
-** Org-Tempo
+
+* Enable PHP LSP in Emacs
+Add this to your Emacs configuration (same style as your current LSP setup.
+
+#+begin_src emacs-lisp
+  (use-package php-mode
+    :mode "\\.php\\'"
+    :hook (php-mode . lsp))
+(with-eval-after-load 'lsp-mode
+  (setq lsp-intelephense-multi-root t
+        lsp-intelephense-files-associations ["**/*.php"]
+        lsp-intelephense-licence-key nil)) ;; if you have paid license add it here
+
+#+end_src
+
+* impatient-mode + simple-httpd
+
+This gives you auto-reload in the browser when you edit HTML/CSS/JS in Emacs.
+
+#+begin_src emacs-lisp
+           (use-package simple-httpd
+             :ensure t)
+
+           (use-package impatient-mode
+             :ensure t)
+           (add-hook 'web-mode-hook #'impatient-mode)
+           (add-hook 'html-mode-hook #'impatient-mode)
+
+
+           (setq httpd-port 9000)  ;; choose your own port
+
+
+           (use-package yasnippet
+           :hook (prog-mode . yas-minor-mode)
+           :config
+           (yas-global-mode 1)
+           (yas-reload-all))
+
+         (use-package yasnippet-snippets
+           :after yasnippet)
+
+         (auto-insert-mode 1)
+       (setq auto-insert-query nil)
+       (add-to-list 'auto-insert-alist
+                    '("\\.html?$" . "default-html5-template.html"))
+
+   (defun insert-html5-template ()
+     "Insert a custom HTML5 boilerplate."
+     (interactive)
+     (insert "<!DOCTYPE html>
+   <html lang=\"en\">
+   <head>
+       <meta charset=\"UTF-8\">
+       <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
+       <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">
+       <title>Document</title>
+   </head>
+   <body>
+       
+   </body>
+   </html>"))
+   (global-set-key (kbd "C-c h") #'insert-html5-template)
+
+
+     (use-package web-mode
+     :mode ("\\.html?\\'" . web-mode)
+     :config
+     (setq web-mode-enable-auto-quoting nil))
+
+  (use-package emmet-mode
+   :hook ((html-mode . emmet-mode)
+          (css-mode . emmet-mode)
+          (web-mode . emmet-mode))
+   :config
+   (setq emmet-expand-jsx-className? t))
+
+#+end_src
+
+
+#+begin_src emacs-lisp
+  (use-package apheleia
+    :ensure t
+    :config
+    (apheleia-global-mode +1)
+
+    ;; ----------------------------
+    ;; Prettier: unified formatter
+    ;; ----------------------------
+    (setf (alist-get 'prettier apheleia-formatters)
+          '("prettier"
+            "--stdin-filepath" filepath
+            "--tab-width" "2"
+            "--use-tabs" "false"))
+
+    ;; OPTIONAL: use Prettier for PHP (requires plugin)
+    (setf (alist-get 'prettier-php apheleia-formatters)
+          '("prettier"
+            "--stdin-filepath" filepath
+            "--plugin" "@prettier/plugin-php"
+            "--tab-width" "4"))
+
+    ;; ----------------------------
+    ;; Python via Black
+    ;; ----------------------------
+    (setf (alist-get 'black apheleia-formatters)
+          '("black" "-"))
+
+    ;; ----------------------------
+    ;; Mode associations
+    ;; ----------------------------
+    (dolist (pair
+             '((html-mode        . prettier)
+               (css-mode         . prettier)
+               (scss-mode        . prettier)
+               (js-mode          . prettier)
+               (js-ts-mode       . prettier)
+               (typescript-mode  . prettier)
+               (tsx-ts-mode      . prettier)
+               ;; (php-mode         . prettier-php)
+               (python-mode      . black)))
+      (add-to-list 'apheleia-mode-alist pair)))
+
+#+end_src
+
+
+** Source Code Block Tag Expansion
 Org-tempo is not a separate package but a module within org that can be enabled.  Org-tempo allows for '<s' followed by TAB to expand to a begin_src tag.  Other expansions available include:
 
 | Typing the below + TAB | Expands to ...                          |
@@ -1477,149 +1775,11 @@ Org-tempo is not a separate package but a module within org that can be enabled.
 (require 'org-tempo)
 #+end_src
 
-** Preserve Indentation On Org-Babel-Tangle
-#+begin_src emacs-lisp
-(setq org-src-preserve-indentation t)
-
-#+end_src
-
-** Toc-Org
-Allows us to create a Table of Contents in our Org docs.
+* My custom packages
 
 #+begin_src emacs-lisp
-(use-package toc-org
-    :commands toc-org-enable
-    :init (add-hook 'org-mode-hook 'toc-org-enable))
-
-#+end_src
-
-** Eshell
-Eshell is an Emacs 'shell' that is written in Elisp.
-
-#+begin_src emacs-lisp
-
-;; Disabling company mode in eshell, because it's annoying.
-(setq company-global-modes '(not eshell-mode))
-
-;; Adding a keybinding for 'pcomplete-list' on F9 key.
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (define-key eshell-mode-map (kbd "<f9>") #'pcomplete-list)))
-
-;; A function for easily creating multiple buffers of 'eshell'.
-;; NOTE: `C-u M-x eshell` would also create new 'eshell' buffers.
-(defun eshell-new (name)
-  "Create new eshell buffer named NAME."
-  (interactive "sName: ")
-  (setq name (concat "$" name))
-  (eshell)
-  (rename-buffer name))
-
-(use-package eshell-toggle
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-use-projectile-root t)
-  (eshell-toggle-run-command nil)
-  (eshell-toggle-init-function #'eshell-toggle-init-ansi-term))
-
-  (use-package eshell-syntax-highlighting
-    :after esh-mode
-    :config
-    (eshell-syntax-highlighting-global-mode +1))
-
-  ;; eshell-syntax-highlighting -- adds fish/zsh-like syntax highlighting.
-  ;; eshell-rc-script -- your profile for eshell; like a bashrc for eshell.
-  ;; eshell-aliases-file -- sets an aliases file for the eshell.
-
-  (setq eshell-rc-script (concat user-emacs-directory "eshell/profile")
-        eshell-aliases-file (concat user-emacs-directory "eshell/aliases")
-        eshell-history-size 5000
-        eshell-buffer-maximum-lines 5000
-        eshell-hist-ignoredups t
-        eshell-scroll-to-bottom-on-input t
-        eshell-destroy-buffer-when-process-dies t
-        eshell-visual-commands'("bash" "fish" "htop" "ssh" "top" "zsh"))
-#+end_src
-
-** Vterm
-Vterm is a terminal emulator within Emacs.  The 'shell-file-name' setting sets the shell to be used in M-x shell, M-x term, M-x ansi-term and M-x vterm.  By default, the shell is set to 'fish' but could change it to 'bash' or 'zsh' if you prefer.
-
-#+begin_src emacs-lisp
-(use-package vterm
-  :ensure t
-  :config
-  (setq shell-file-name "/bin/sh"
-        vterm-max-scrollback 5000))
-#+end_src
-
-** Vterm-Toggle 
-[[https://github.com/jixiuf/vterm-toggle][vterm-toggle]] toggles between the vterm buffer and whatever buffer you are editing.
-
-#+begin_src emacs-lisp
-(use-package vterm-toggle
-  :ensure t
-  :after vterm
-  :config
-  ;; When running programs in Vterm and in 'normal' mode, make sure that ESC
-  ;; kills the program as it would in most standard terminal programs.
-  (evil-define-key 'normal vterm-mode-map (kbd "<escape>") 'vterm--self-insert)
-  (setq vterm-toggle-fullscreen-p nil)
-  (setq vterm-toggle-scope 'project)
-  (add-to-list 'display-buffer-alist
-               '((lambda (buffer-or-name _)
-                     (let ((buffer (get-buffer buffer-or-name)))
-                       (with-current-buffer buffer
-                         (or (equal major-mode 'vterm-mode)
-                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
-                  (display-buffer-reuse-window display-buffer-at-bottom)
-                  ;;(display-buffer-reuse-window display-buffer-in-direction)
-                  ;;display-buffer-in-direction/direction/dedicated is added in emacs27
-                  ;;(direction . bottom)
-                  ;;(dedicated . t) ;dedicated is supported in emacs27
-                  (reusable-frames . visible)
-                  (window-height . 0.4))))
-
-#+end_src
-
-* SUDO EDIT
-[[https://github.com/nflath/sudo-edit][sudo-edit]] gives us the ability to open files with sudo privileges or switch over to editing with sudo privileges if we initially opened the file without such privileges.
-
-#+begin_src emacs-lisp
-(use-package sudo-edit)
-#+end_src
-
-#+begin_src emacs-lisp
-(dolist (mode '(term-mode-hook vterm-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode -1))))   
-#+end_src
-
-
-#+begin_src emacs-lisp
-(use-package ewal
-  :init (setq ewal-use-built-in-always-p nil
-              ewal-use-built-in-on-failure-p t
-              ewal-built-in-palette "sexy-material"))
-(use-package ewal-spacemacs-themes
-  :init (progn
-          (setq spacemacs-theme-underline-parens t
-                my:rice:font (font-spec
-                              :family "Source Code Pro"
-                              :weight 'semi-bold
-                              :size 22.0))
-          (show-paren-mode +1)
-          (global-hl-line-mode)
-          (set-frame-font my:rice:font nil t)
-          (add-to-list  'default-frame-alist
-                        `(font . ,(font-xlfd-name my:rice:font))))
-  :config (progn
-            (load-theme 'ewal-spacemacs-modern t)
-            (enable-theme 'ewal-spacemacs-modern)))
-(use-package ewal-evil-cursors
-  :after (ewal-spacemacs-themes)
-  :config (ewal-evil-cursors-get-colors
-           :apply t :spaceline t))
-(use-package spaceline
-  :after (ewal-evil-cursors winum)
-  :init (setq powerline-default-separator nil)
-  :config (spaceline-spacemacs-theme))
+  (add-to-list 'load-path "~/.emacs.d/icheat")
+  (add-to-list 'load-path "~/.emacs.d/icheat/example")
+(require 'icheat)
+(require 'pt)
 #+end_src

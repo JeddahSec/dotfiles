@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start Page</title>
+
+  <!-- Pywal Colors -->
+  <link rel="stylesheet" href="colors.css">
+
+  <style>
+    /* Root variables (linked to pywal colors) */
+    :root {
+      --bg: var(--color0);
+      --fg: var(--color7);
+      --accent: var(--color4);
+      --hover: var(--color3);
+    }
+
+    /* General body styles */
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: "Inter", "Fira Sans", "Segoe UI", sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    /* Title */
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 25px;
+    }
+
+    /* Search Bar */
+    form {
+      display: flex;
+      align-items: center;
+      width: 90%;
+      max-width: 500px;
+      border: 2px solid var(--accent);
+      border-radius: 35px;
+      overflow: hidden;
+      background: rgba(20, 20, 20, 0.3);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--fg);
+      font-size: 1rem;
+    }
+
+    input[type="text"]::placeholder {
+      color: var(--fg);
+      opacity: 0.6;
+    }
+
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 14px 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: var(--hover);
+    }
+
+    /* Quick Links */
+    .links {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 18px;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    .link-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      background: rgba(30, 30, 30, 0.4);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--fg);
+    }
+
+    .link-item img {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 8px;
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+    }
+
+    .link-item:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .link-item:hover img {
+      filter: none;
+    }
+
+    /* Footer */
+    footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+/* Accounts container */
+.accounts {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  font-size: 1.2rem;
+}
+
+/* Each account item */
+.account-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(30, 30, 30, 0.4);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--fg);
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(6px);
+}
+
+.account-item img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1); /* white icons for dark theme */
+  transition: filter 0.3s ease;
+}
+
+/* Hover effect */
+.account-item:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.account-item:hover img {
+  filter: none; /* original icon colors */
+}
+
+/* Homepage subtitle/message */
+.homepage-message {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  color: var(--fg);
+  opacity: 0.8;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.homepage-message:hover {
+  color: var(--accent);
+}
+  </style>
+</head>
+<body>
+  <h1>Welcome, Hussain :)</h1>
+  <!-- Accounts / Links Section -->
+  <!-- Message / Subtitle -->
+  <p class="homepage-message">Check out my profiles and projects below!</p>
+<div class="accounts">
+  <a href="https://www.youtube.com/@JeddahSec" target="_blank" class="account-item">
+    <img src="icons/youtube.svg" alt="YouTube">
+    <span>@JeddahSec</span>
+  </a>
+  <a href="https://github.com/JeddahSec" target="_blank" class="account-item">
+    <img src="icons/github.svg" alt="GitHub">
+    <span>JeddahSec</span>
+  </a>
+  <a href="https://jeddahsec.io" target="_blank" class="account-item">
+    <img src="icons/website.svg" alt="Website">
+    <span>jeddahsec.io</span>
+  </a>
+  <a href="https://www.snapchat.com/add/Jeddahsec" target="_blank" class="account-item">
+    <img src="icons/snapchat.svg" alt="Snapchat">
+    <span>JeddahSec</span>
+  </a>
+  <a href="https://x.com/JeddahSec" target="_blank" class="account-item">
+    <img src="icons/twitter.svg" alt="X">
+    <span>JeddahSec</span>
+  </a>
+  <a href="https://t.me/JeddahSec" target="_blank" class="account-item">
+    <img src="icons/telegram.svg" alt="Telegram">
+    <span>@JeddahSec</span>
+  </a>
+  <a href="https://tiktok.com/@jeddahsec3" target="_blank" class="account-item">
+    <img src="icons/tiktok.svg" alt="tiktok">
+    <span>@jeddahsec3</span>
+  </a>
+</div>
+  <!-- DuckDuckGo Search Bar -->
+  <form action="https://www.duckduckgo.com/?q=" method="get">
+  <input type="text" name="q" placeholder="Search with DuckDuckGo..." required>
+    <button type="submit">Go</button>
+  </form>
+
+  <!-- Quick Links Section -->
+  <div class="links">
+    <a href="https://github.com/JeddahSec" class="link-item">
+      <img src="icons/github.svg" alt="GitHub">
+      GitHub
+    </a>
+    <a href="https://x.com" class="link-item">
+      <img src="icons/twitter.svg" alt="X (Twitter)">
+      X
+    </a>
+    <a href="https://reddit.com" class="link-item">
+      <img src="icons/reddit.svg" alt="Reddit">
+      Reddit
+    </a>
+    <a href="https://youtube.com" class="link-item">
+      <img src="icons/youtube.svg" alt="YouTube">
+      YouTube
+    </a>
+    <a href="https://mail.proton.me" class="link-item">
+      <img src="icons/mail.svg" alt="Email">
+      Mail
+    </a>
+    <a href="https://instagram.com/" class="link-item">
+      <img src="icons/instagram.svg" alt="Email">
+      Instagram
+    </a>
+    <a href="https://www.facebook.com/" class="link-item">
+      <img src="icons/facebook.svg" alt="Email">
+      Facebook
+    </a>
+    <a href="https://search.brave.com/" class="link-item">
+      <img src="icons/search.svg" alt="Email">
+      Brave
+    </a>
+    </a>
+    <a href="https://www.amazon.sa/-/en/" class="link-item">
+      <img src="icons/amazon.svg" alt="Email">
+      Amazon
+    </a>
+    <a href="https://account.hackthebox.com/login" class="link-item">
+      <img src="icons/hackthebox.svg" alt="Email">
+      Hackthebox
+    </a>
+    <a href="https://www.deepl.com/en/translator" class="link-item">
+      <img src="icons/translate.svg" alt="Email">
+      Translate
+    </a>
+    <a href="https://www.udemy.com/" class="link-item">
+      <img src="icons/udemy.svg" alt="Email">
+      Udemy
+    </a>
+  </div>
+
+  <footer>
+    Qutebrowser Custom Homepage — Styled with Pywal
+  </footer>
+</body>
+</html>
+

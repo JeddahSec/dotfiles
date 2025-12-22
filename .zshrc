@@ -14,6 +14,13 @@ export TERM="xterm-256color"                      # getting proper colors
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 export EDITOR="emacsclient -t -a ''"              # $EDITOR use Emacs in terminal
 export VISUAL="emacsclient -c -a emacs"           # $VISUAL use Emacs in GUI mode
+export TEXMFCNF='~/.local/bin/tex_config_dir:'
+export PATH=$PATH:/snap/bin
+
+# Fix the Java Problem
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# Mpd daemon start
 
 ### SET FZF DEFAULTS
 export FZF_DEFAULT_OPTS="--layout=reverse --exact --border=bold --border=rounded --margin=3% --color=dark"
@@ -173,13 +180,13 @@ alias em="/usr/bin/emacs -nw" # Terminal version of Emacs
 alias rem="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon" # Kill Emacs and restart daemon..
 
 # Changing "ls" to "eza"
-alias ls='eza -al --color=always --group-directories-first' # my preferred listing
-alias la='eza -a --color=always --group-directories-first'  # all files and dirs
-alias ll='eza -l --color=always --group-directories-first'  # long format
-alias lt='eza -aT --color=always --group-directories-first' # tree listing
-alias l.='eza -al --color=always --group-directories-first ../' # ls on the PARENT directory
-alias l..='eza -al --color=always --group-directories-first ../../' # ls on directory 2 levels up
-alias l...='eza -al --color=always --group-directories-first ../../../' # ls on directory 3 levels up
+alias ls='eza -al --color=always --group-directories-first --icons' # my preferred listing
+alias la='eza -a --color=always --group-directories-first --icons'  # all files and dirs
+alias ll='eza -l --color=always --group-directories-first --icons'  # long format
+alias lt='eza -aT --color=always --group-directories-first --icons' # tree listing
+alias l.='eza -al --color=always --group-directories-first ../ --icons' # ls on the PARENT directory
+alias l..='eza -al --color=always --group-directories-first ../../ --icons' # ls on directory 2 levels up
+alias l...='eza -al --color=always --group-directories-first ../../../ --icons' # ls on directory 3 levels up
 
 # pacman and yay
 alias pacsyu='sudo pacman -Syu'                  # update only standard pkgs
@@ -205,9 +212,9 @@ alias grep='grep --color=auto' # colorize output (good for log files)
 # ip color
 alias ip='ip -c'
 # bat
-alias cat='bat --theme=1337'
-alias catn='bat --style=plain --theme=1337'
-alias catnp='bat --style=plain --paging=never --theme=1337'
+alias cat='bat --theme=base16'
+alias catn='bat --style=plain --theme=base16'
+alias catnp='bat --style=plain --paging=never --theme=base16'
 
 # ps
 alias psa="ps auxf"
@@ -217,6 +224,9 @@ alias pscpu='ps auxf | sort -nr -k 3'
 
 # Merge Xresources
 alias merge='xrdb -merge ~/.Xresources'
+
+# Customization
+alias merge_audio_video='f() { ffmpeg -i "$1" -i "$2" -c:v copy -c:a aac -strict experimental "$3"; }; f'
 
 # git
 alias addup='git add -u'
@@ -234,6 +244,23 @@ alias newtag='git tag -a'
 
 # get error messages from journalctl
 alias jctl="journalctl -p 3 -xb"
+
+
+# Basic download
+alias ytdl='yt-dlp'
+# Download best quality video + audio
+alias ytdl-best='yt-dlp -f "bestvideo+bestaudio/best" --merge-output-format mkv'
+# Download as MP3 audio only
+alias ytdl-mp3='yt-dlp -x --audio-format mp3 --audio-quality 0'
+# Download as MP4
+alias ytdl-mp4='yt-dlp -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"'
+# Download playlist
+alias ytdl-playlist='yt-dlp -o "%(playlist_index)s - %(title)s.%(ext)s"'
+# Download with thumbnail
+alias ytdl-thumb='yt-dlp --embed-thumbnail --embed-metadata'
+# 4K download
+alias ytdl-4k='yt-dlp -f "bestvideo[height<=2160][vcodec^=avc1]+bestaudio/best"'
+
 
 # gpg encryption
 # verify signature for isos
@@ -258,6 +285,9 @@ alias tb="nc termbin.com 9999"
 
 # the terminal rickroll
 alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
+
+# LIVESEVER
+alias liveserver='browser-sync start --server --files "*.html, *.css, *.js"'
 
 ### RANDOM COLOR SCRIPT ###
 # Get this script from my GitLab: gitlab.com/dwt1/shell-color-scripts

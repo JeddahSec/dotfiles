@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome, Hussain 👋</title>
+  <link rel="stylesheet" href="colors.css">
+
+  <style>
+    :root {
+      --bg: var(--color0);
+      --fg: var(--color7);
+      --accent: var(--color4);
+      --hover: var(--color3);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Inter", "Fira Sans", "Segoe UI", sans-serif;
+      color: var(--fg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      background: linear-gradient(-45deg, var(--bg), var(--color1), var(--color2), var(--color4));
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+    }
+
+    /* Background gradient animation */
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating glowing orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 25s linear infinite;
+      z-index: 0;
+    }
+
+    .orb:nth-child(1) {
+      width: 250px;
+      height: 250px;
+      background: var(--color2);
+      top: 10%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+
+    .orb:nth-child(2) {
+      width: 300px;
+      height: 300px;
+      background: var(--color4);
+      top: 60%;
+      left: 70%;
+      animation-delay: 5s;
+    }
+
+    .orb:nth-child(3) {
+      width: 200px;
+      height: 200px;
+      background: var(--color3);
+      top: 70%;
+      left: 10%;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-40px) translateX(30px); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      position: relative;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      animation: fadeIn 1s ease forwards;
+      z-index: 2;
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .homepage-message {
+      margin-top: 10px;
+      font-size: 1.1rem;
+      opacity: 0.8;
+      animation: fadeIn 1.2s ease forwards;
+      z-index: 2;
+    }
+
+    /* Accounts container */
+    .accounts {
+      margin-top: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      animation: fadeIn 1.4s ease forwards;
+      z-index: 2;
+    }
+
+    .account-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 500;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+
+    .account-item img {
+      width: 22px;
+      height: 22px;
+      filter: brightness(0) invert(1);
+      transition: transform 0.3s ease;
+    }
+
+    .account-item:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    .account-item:hover img {
+      filter: none;
+      transform: scale(1.15);
+    }
+
+    /* Search Bar */
+    form {
+      display: flex;
+      align-items: center;
+      width: 90%;
+      max-width: 500px;
+      border: 1.5px solid var(--accent);
+      border-radius: 35px;
+      overflow: hidden;
+      margin-top: 30px;
+      background: rgba(20, 20, 20, 0.25);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+      transition: box-shadow 0.3s ease;
+      animation: fadeIn 1.6s ease forwards;
+      z-index: 2;
+    }
+
+    form:hover {
+      box-shadow: 0 0 20px var(--accent);
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--fg);
+      font-size: 1rem;
+    }
+
+    input::placeholder {
+      color: var(--fg);
+      opacity: 0.5;
+    }
+
+    button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 14px 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: var(--hover);
+    }
+
+    /* Quick Links */
+    .links {
+      margin-top: 45px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      width: 90%;
+      max-width: 650px;
+      animation: fadeIn 1.8s ease forwards;
+      z-index: 2;
+    }
+
+    .link-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      text-decoration: none;
+      color: var(--fg);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .link-item img {
+      width: 30px;
+      height: 30px;
+      margin-bottom: 8px;
+      filter: brightness(0) invert(1);
+      transition: transform 0.3s ease;
+    }
+
+    .link-item:hover {
+      background: var(--accent);
+      color: #fff;
+      transform: translateY(-4px);
+    }
+
+    .link-item:hover img {
+      filter: none;
+      transform: scale(1.2);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 12px;
+      font-size: 0.8rem;
+      opacity: 0.6;
+      z-index: 2;
+      animation: fadeIn 2s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <!-- Glowing Orbs -->
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+
+  <h1>Welcome, Hussain 👋</h1>
+  <p class="homepage-message">Explore my world — projects, profiles, and passions below.</p>
+
+  <div class="accounts">
+    <a href="https://www.youtube.com/@JeddahSec" class="account-item">
+      <img src="icons/youtube.svg" alt="YouTube"><span>@JeddahSec</span>
+    </a>
+    <a href="https://github.com/JeddahSec" class="account-item">
+      <img src="icons/github.svg" alt="GitHub"><span>JeddahSec</span>
+    </a>
+    <a href="https://jeddahsec.io" class="account-item">
+      <img src="icons/website.svg" alt="Website"><span>jeddahsec.io</span>
+    </a>
+    <a href="https://www.snapchat.com/add/Jeddahsec" class="account-item">
+      <img src="icons/snapchat.svg" alt="Snapchat"><span>JeddahSec</span>
+    </a>
+    <a href="https://x.com/JeddahSec" class="account-item">
+      <img src="icons/twitter.svg" alt="X"><span>@JeddahSec</span>
+    </a>
+    <a href="https://t.me/JeddahSec" class="account-item">
+      <img src="icons/telegram.svg" alt="Telegram"><span>@JeddahSec</span>
+    </a>
+    <a href="https://tiktok.com/@jeddahsec3" class="account-item">
+      <img src="icons/tiktok.svg" alt="TikTok"><span>@jeddahsec3</span>
+    </a>
+  </div>
+
+  <form action="https://duckduckgo.com/" method="get">
+    <input type="text" name="q" placeholder="Search with DuckDuckGo..." required>
+    <button type="submit">Go</button>
+  </form>
+
+  <div class="links">
+    <a href="https://github.com/JeddahSec" class="link-item"><img src="icons/github.svg" alt="GitHub">GitHub</a>
+    <a href="https://x.com" class="link-item"><img src="icons/twitter.svg" alt="X">X</a>
+    <a href="https://reddit.com" class="link-item"><img src="icons/reddit.svg" alt="Reddit">Reddit</a>
+    <a href="https://youtube.com" class="link-item"><img src="icons/youtube.svg" alt="YouTube">YouTube</a>
+    <a href="https://mail.proton.me" class="link-item"><img src="icons/mail.svg" alt="Mail">Mail</a>
+    <a href="https://instagram.com" class="link-item"><img src="icons/instagram.svg" alt="Instagram">Instagram</a>
+    <a href="https://facebook.com" class="link-item"><img src="icons/facebook.svg" alt="Facebook">Facebook</a>
+    <a href="https://search.brave.com" class="link-item"><img src="icons/search.svg" alt="Brave">Brave</a>
+    <a href="https://www.amazon.sa" class="link-item"><img src="icons/amazon.svg" alt="Amazon">Amazon</a>
+    <a href="https://account.hackthebox.com/login" class="link-item"><img src="icons/hackthebox.svg" alt="HTB">HackTheBox</a>
+    <a href="https://deepl.com/en/translator" class="link-item"><img src="icons/translate.svg" alt="Translate">Translate</a>
+    <a href="https://udemy.com" class="link-item"><img src="icons/udemy.svg" alt="Udemy">Udemy</a>
+  </div>
+
+  <footer>Qutebrowser Custom Homepage — Styled with Pywal ✨</footer>
+</body>
+</html>
+
