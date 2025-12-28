@@ -1,0 +1,38 @@
+export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/src:$PATH
+export PATH=$HOME/.local/src/dwmblocks:$PATH
+export PATH=$HOME/.local/src/statusbar:$PATH
+export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+fcitx5 &
+
+# Wallpaper
+nitrogen --restore &
+
+xset s off &
+xset -dpms &
+
+#wallpaper
+~/.local/src/statusbar/pywal16 &
+
+#Notify
+dunst &
+
+#Mount Drives
+udiskie &
+
+#Compositor
+picom -f &
+
+dwmblocks &
+
+dbus-launch & pulseaudio --start &
+
+udiskie -t &
+nm-applet &
+
+# #Execute DWM
+while true; do
+		dwm >/dev/null 2>&1
+done
