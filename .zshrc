@@ -16,6 +16,10 @@ export EDITOR="emacsclient -t -a ''"              # $EDITOR use Emacs in termina
 export VISUAL="emacsclient -c -a emacs"           # $VISUAL use Emacs in GUI mode
 export TEXMFCNF='~/.local/bin/tex_config_dir:'
 export PATH=$PATH:/snap/bin
+export XCURSOR_SIZE=16
+
+# Wireshark dark mood
+export QT_STYLE_OVERRIDE=Adwaita-Dark   
 
 # Fix the Java Problem
 export _JAVA_AWT_WM_NONREPARENTING=1
@@ -320,16 +324,59 @@ function mkt(){
 }
 
 # Extract nmap information
-function extractPorts(){
-	ports="$(cat $1 | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
-	ip_address="$(cat $1 | grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' | sort -u | head -n 1)"
-	echo -e "\n[*] Extracting information...\n" > extractPorts.tmp
-	echo -e "\t[*] IP Address: $ip_address"  >> extractPorts.tmp
-	echo -e "\t[*] Open ports: $ports\n"  >> extractPorts.tmp
-	echo $ports | tr -d '\n' | xclip -sel clip
-	echo -e "[*] Ports copied to clipboard\n"  >> extractPorts.tmp
-	cat extractPorts.tmp; rm extractPorts.tmp
+#function extractPorts(){
+#	ports="$(cat $1 | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
+#	ip_address="$(cat $1 | grep -oP '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}' | sort -u | head -n 1)"
+#	echo -e "\n[*] Extracting information...\n" > extractPorts.tmp
+#	echo -e "\t[*] IP Address: $ip_address"  >> extractPorts.tmp
+#	echo -e "\t[*] Open ports: $ports\n"  >> extractPorts.tmp
+#	echo $ports | tr -d '\n' | xclip -sel clip
+#	echo -e "[*] Ports copied to clipboard\n"  >> extractPorts.tmp
+#	cat extractPorts.tmp; rm extractPorts.tmp
+#}
+#
+#
+function extractPorts() {
+    local file="$1"
+
+    # Validation
+    if [[ ! -f "$file" ]]; then
+        echo -e "\e[31m[!] Error: File '$file' not found.\e[0m"
+        return 1
+    fi
+
+    # Extraction logic
+    local ip_address=$(grep -oP '\d{1,3}(\.\d{1,3}){3}' "$file" | head -n 1)
+    local ports=$(grep -oP '\d{1,5}/open' "$file" | cut -d'/' -f1 | xargs | tr ' ' ',')
+
+    if [[ -z "$ports" ]]; then
+        echo -e "\e[31m[!] No open ports found.\e[0m"
+        return 1
+    fi
+
+    # 1. Define the command
+    local nmap_cmd="nmap -sCV -p$ports $ip_address -oN targeted"
+
+    # 2. Show the summary with bat
+    echo -e "Target IP: $ip_address\nOpen Ports: $ports\nAction: Running Targeted Scan..." | \
+    bat --style=grid --color=always --language=yaml --terminal-width 80
+
+    # 3. Copy ports to clipboard (still useful for other tools like gobuster)
+    if command -v xclip >/dev/null; then
+        echo -n "$ports" | xclip -sel clip
+    fi
+
+    # 4. EXECUTE the scan
+    echo -e "\e[33m[*] Executing: $nmap_cmd\e[0m\n"
+    eval $nmap_cmd
+
+    # 5. Show results with bat once finished
+    if [[ -f "targeted" ]]; then
+        echo -e "\n\e[32m[*] Scan Complete. Results:\e[0m"
+        bat targeted
+    fi
 }
 
+#
 # zsh syntax highlighting
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
