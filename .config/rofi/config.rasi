@@ -3,13 +3,17 @@ configuration {
   display-drun: "Applications:";
   display-window: "Windows:";
   drun-display-format: "{name}";
-  font: "JetBrainsMono Nerd Font Medium 14";
+  font: "JetBrainsMono Nerd Font Medium 18";
   modi: "window,run,drun";
+  show-icons: true;
 }
 
 /* Light theme. */
 /* @import "~/.cache/wal/colors-rofi-light" */
 
 /* Dark theme. */
-@theme "~/.cache/wal/colors-rofi-dark.rasi"
+//@theme "~/.cache/wal/colors-rofi-dark.rasi"
+@theme "~/.config/rofi/onedark.rasi"
+
+
 
