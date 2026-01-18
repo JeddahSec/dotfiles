@@ -15,8 +15,8 @@ The following variables are used to tweak some of the configuration pieces for u
   ;;       in Emacs and init.el will be generated automatically!
 
   ;; You will most likely need to adjust this font size for your system!
-  (defvar efs/default-font-size 220)
-  (defvar efs/default-variable-font-size 220)
+  (defvar efs/default-font-size 250)
+  (defvar efs/default-variable-font-size 250)
 
   ;; Make frame transparency overridable
   (defvar efs/frame-transparency '(70 . 70))
@@ -236,6 +236,7 @@ This configuration uses [[https://evil.readthedocs.io/en/latest/index.html][evil
     :init (load-theme 'doom-one t))
     ;; :init (load-theme 'doom-challenger-deep t))
     ;; :init (load-theme 'doom-monokai-pro t))
+    ;; :init (load-theme 'doom-monokai-ristretto t))
     ;; :init (load-theme 'doom-monokai-octagon t))
 
 #+end_src
@@ -1751,7 +1752,6 @@ This gives you auto-reload in the browser when you edit HTML/CSS/JS in Emacs.
                ;; (php-mode         . prettier-php)
                (python-mode      . black)))
       (add-to-list 'apheleia-mode-alist pair)))
-
 #+end_src
 
 
@@ -1782,4 +1782,17 @@ Org-tempo is not a separate package but a module within org that can be enabled.
   (add-to-list 'load-path "~/.emacs.d/icheat/example")
 (require 'icheat)
 (require 'pt)
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package eglot
+    :ensure t
+    :config
+    (add-to-list 'eglot-server-programs
+                 '((php-mode :language-id "php") . ("intelephense" "--stdio"))))
+
+  (add-hook 'php-mode-hook 'eglot-ensure)
+(add-hook 'php-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'eglot-format-buffer nil t)))
 #+end_src
