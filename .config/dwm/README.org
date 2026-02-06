@@ -28,7 +28,7 @@
 - [[#custom-scripts][Custom Scripts]]
 
 * About DWM
-[[../.screenshots/dwm.png]]
+[[dwm.png]]
 Dwm is an extremely fast, small, and dynamic window manager for X. Dwm is created by the good folks at suckless.org.  
 
 ** The patches I added to this build include:
