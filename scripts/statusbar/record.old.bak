@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+record() {
+  # Toggle on mic
+  pactl set-source-mute @DEFAULT_SOURCE@ false
+
+  # Generic command to record at your screen dimensions
+  ffmpeg -s "$(xdpyinfo | awk '/dimensions/{print $2}')" -f x11grab -r 30 -i :0.0 -c:v h264 -qp 0 "$HOME/Videos/Video_$(date '+%a__%b%d__%H_%M_%S').mkv" &
+  echo $! > /tmp/recpid
+
+  # Capture audio using PulseAudio
+  ffmpeg -f pulse -i default -af "afftdn=nf=-75" "$HOME/Videos/Video_$(date '+%a__%b%d__%H_%M_%S').wav" &
+  echo $! > /tmp/audpid
+
+  echo "Rec •" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
+
+  notify-send -t 500 -h string:bgcolor:#a3be8c "Recording started & mic unmuted"
+}
+
+end() {
+  kill -15 "$(cat /tmp/recpid)" "$(cat /tmp/audpid)" && rm -f /tmp/recpid /tmp/audpid
+
+  pactl set-source-mute @DEFAULT_SOURCE@ true
+
+  echo "" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
+
+  notify-send -t 500 -h string:bgcolor:#bf616a "Recording ended & mic muted"
+}
+
+# If the recording pid exists, end recording. If not, start recording
+([[ -f /tmp/recpid ]] && end && exit 0) || record
+

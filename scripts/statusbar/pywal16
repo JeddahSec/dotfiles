@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# ln -sf ~/.cache/wal/picom.conf ~/.config/picom/picom.conf
+ln -sf ~/.cache/wal/dunstrc ~/.config/dunst/dunstrc
+ln -sf ~/.cache/wal/pywal16.yml ~/.config/termusic/themes/pywal16.yml
+
+# recompileslock # colors-wal-slock.h could just use xresources path for slock instead
+pgrep qutebrowser > /dev/null && qutebrowser ':config-source'
+
+pkill dunst; setsid -f dunst
+refresh # xrdb for dwm bar
+notify-send "Wallpaper and colorscheme changed; setting rgb value"
+
+openrgb --noautoconnect -c $(tail -c +2 ~/.cache/wal/colors-rgb) -b 65 # Set rgb last so it doesn't hnag
+
+ln -sf ~/.cache/wal/colors.Xresources ~/.Xresources
+cat ~/.Xresources ~/.cache/wal/xrdb_extra | xrdb -merge
+xdotool key super+ctrl+backslash

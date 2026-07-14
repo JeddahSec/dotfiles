@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+record() {
+  pactl set-source-mute @DEFAULT_SOURCE@ false
+
+  OUT="$HOME/Videos/Video_$(date '+%a__%b%d__%H_%M_%S').mkv"
+
+  ffmpeg \
+    -f x11grab -r 30 -s "$(xdpyinfo | awk '/dimensions/{print $2}')" -i :0.0 \
+    -f pulse -i default \
+    -c:v libx264 -preset ultrafast -qp 0 \
+    -c:a aac -b:a 192k \
+    "$OUT" &
+
+  echo $! > /tmp/recpid
+
+  echo "Rec •" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
+  notify-send -t 500 -h string:bgcolor:#a3be8c "Recording started (video + audio)"
+}
+
+end() {
+  kill -15 "$(cat /tmp/recpid)" && rm -f /tmp/recpid
+
+  pactl set-source-mute @DEFAULT_SOURCE@ true
+
+  echo "" > /tmp/recordingicon && pkill -RTMIN+3 dwmblocks
+  notify-send -t 500 -h string:bgcolor:#bf616a "Recording ended"
+}
+
+([[ -f /tmp/recpid ]] && end && exit 0) || record

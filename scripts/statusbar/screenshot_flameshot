@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Flameshot script for dwm
+# Save this as ~/.local/bin/flameshot.sh or /usr/local/bin/flameshot.sh
+
+# Check if flameshot is installed
+if ! command -v flameshot &> /dev/null; then
+    echo "Flameshot is not installed. Please install it first."
+    exit 1
+fi
+
+# Function to take a full screenshot
+full_screenshot() {
+    flameshot full -p ~/Pictures/Screenshots/
+}
+
+# Function to take a GUI screenshot (interactive selection)
+gui_screenshot() {
+    flameshot gui
+}
+
+# Function to take screenshot with delay
+delayed_screenshot() {
+    flameshot full -d 3 -p ~/Pictures/Screenshots/
+}
+
+# Main menu
+echo "Select screenshot option:"
+echo "1) Full screenshot"
+echo "2) Interactive selection (GUI)"
+echo "3) Delayed screenshot (3 seconds)"
+echo "4) Cancel"
+
+read -p "Enter choice [1-4]: " choice
+
+case $choice in
+    1)
+        full_screenshot
+        ;;
+    2)
+        gui_screenshot
+        ;;
+    3)
+        delayed_screenshot
+        ;;
+    4)
+        echo "Cancelled"
+        exit 0
+        ;;
+    *)
+        echo "Invalid option"
+        exit 1
+        ;;
+esac

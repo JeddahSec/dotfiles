@@ -1,0 +1,26 @@
+# BEGIN_KITTY_FONTS
+font_family      family='JetBrainsMono Nerd Font Mono' postscript_name=JetBrainsMonoNFM-Regular
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+# END_KITTY_FONTS
+
+font_size 26
+adjust_line_height 150%
+
+
+cursor_blink_interval 0
+cursor_beam_thickness 4
+enable_audio_bell no
+hide_window_decorations yes
+window_padding_width 10
+hide_window_decorations titlebar-only
+
+#cursor_trail 20
+#cursor_trail_start_threshold 2
+#cursor_trail_decay 0.0 0.10
+
+# BEGIN_KITTY_THEME
+# One Dark
+include current-theme.conf
+# END_KITTY_THEME

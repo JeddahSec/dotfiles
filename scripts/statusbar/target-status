@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+TARGET_FILE="$HOME/.target"
+
+get_target_status() {
+    # If file missing or empty
+    [[ ! -s "$TARGET_FILE" ]] && {
+        echo " No target"
+        return
+    }
+
+    # Read and trim
+    target=$(xargs < "$TARGET_FILE")
+
+    # Basic IPv4 validation
+    if [[ $target =~ ^([0-9]{1,3}\.){3}[0-9]{1,3} ]]; then
+        echo " HTB $target"
+    else
+        echo " Invalid target"
+    fi
+}
+
+get_target_status

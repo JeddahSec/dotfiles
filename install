@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# Exit immediately if a command exits with a non-zero status,
+# and treat unset variables as an error.
+set -euo pipefail
+
+# 1. Fix the syntax bug to get the absolute path of this script's directory
+DOTFILES=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+# Helper function to safely symlink files/folders with backups
+link_file() {
+    local src="$1"
+    local dest="$2"
+
+    # Create the parent directory if it doesn't exist
+    mkdir -p "$(dirname "$dest")"
+
+    # If the destination exists and is a real file/folder (not a symlink)
+    if [ -e "$dest" ] && [ ! -L "$dest" ]; then
+        echo "⚠️  Backing up existing configuration: $dest -> $dest.bak"
+        mv "$dest" "$dest.bak"
+    # If it's already a symlink, just remove it so we can re-link
+    elif [ -L "$dest" ]; then
+        rm "$dest"
+    fi
+
+    echo "🔗 Linking $src -> $dest"
+    ln -s "$src" "$dest"
+}
+
+# --- Symlink Core Configurations ---
+
+# Terminal & Multiplexer
+link_file "$DOTFILES/kitty" "$HOME/.config/kitty"
+link_file "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
+link_file "$DOTFILES/scripts/t" "$HOME/.local/bin/t"
+
+# Editor
+link_file "$DOTFILES/nvim" "$HOME/.config/nvim"
+
+# Window Manager & Rice (Fixed typos and switched to linking)
+link_file "$DOTFILES/config/dmenu" "$HOME/.local/bin/dmenu"
+link_file "$DOTFILES/config/dunst" "$HOME/.config/dunst"      # Switched to config folder
+link_file "$DOTFILES/config/rofi" "$HOME/.config/rofi"        # Fixed typo: roft -> rofi
+link_file "$DOTFILES/config/dwm" "$HOME/.config/dwm"
+link_file "$DOTFILES/config/dwmblocks" "$HOME/.local/bin/dwmblocks"
+link_file "$DOTFILES/config/picom" "$HOME/.config/picom"
+link_file "$DOTFILES/config/qutebrowser" "$HOME/.config/qutebrowser"
+link_file "$DOTFILES/scripts/statusbar" "$HOME/.local/bin/statusbar"
+
+# --- Install Oh My Zsh ---
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    echo "📦 Installing Oh My Zsh..."
+    KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+else
+    echo "✨ Oh My Zsh is already installed."
+fi
+
+echo "✅ Dotfiles setup complete!"
