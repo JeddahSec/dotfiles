@@ -135,9 +135,12 @@ if command -v fzf &> /dev/null; then
     --padding=0,1
     --margin=4,10
     --color=dark
-    --color=fg:-1,bg:-1,hl:#c678dd,fg+:#ffffff,bg+:#4b5263,hl+:#d858fe
-    --color=info:#98c379,prompt:#61afef,pointer:#be5046,marker:#e5c07b,spinner:#61afef,header:#61afef,gutter:-1,border:#1f2335
+    --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
+    --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
+    --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
+    --color=selected-bg:#45475a,border:#1e1e2e,gutter:-1
     '
+
 fi
 
 # Starship Prompt (Uncomment if you want to use it instead of robbyrussell)
