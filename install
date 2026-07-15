@@ -38,15 +38,53 @@ link_file "$DOTFILES/scripts/t" "$HOME/.local/bin/t"
 # Editor
 link_file "$DOTFILES/nvim" "$HOME/.config/nvim"
 
-# Window Manager & Rice (Fixed typos and switched to linking)
-link_file "$DOTFILES/config/dmenu" "$HOME/.local/bin/dmenu"
-link_file "$DOTFILES/config/dunst" "$HOME/.config/dunst"      # Switched to config folder
-link_file "$DOTFILES/config/rofi" "$HOME/.config/rofi"        # Fixed typo: roft -> rofi
-link_file "$DOTFILES/config/dwm" "$HOME/.config/dwm"
-link_file "$DOTFILES/config/dwmblocks" "$HOME/.local/bin/dwmblocks"
+# --- Symlink Core Configurations ---
+
+# Terminal & Multiplexer
+link_file "$DOTFILES/kitty" "$HOME/.config/kitty"
+link_file "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
+link_file "$DOTFILES/scripts/t" "$HOME/.local/bin/t"
+
+# Editor
+link_file "$DOTFILES/nvim" "$HOME/.config/nvim"
+
+# Other Window Manager Configs & Rice
+link_file "$DOTFILES/config/rofi" "$HOME/.config/rofi"
 link_file "$DOTFILES/config/picom" "$HOME/.config/picom"
 link_file "$DOTFILES/config/qutebrowser" "$HOME/.config/qutebrowser"
+
+# --- Target Group of Links ---
+link_file "$DOTFILES/config/dwm" "$HOME/.config/dwm"
+link_file "$DOTFILES/config/dmenu" "$HOME/.local/bin/dmenu"
+link_file "$DOTFILES/config/dunst" "$HOME/.config/dunst"
+link_file "$DOTFILES/config/dwmblocks" "$HOME/.local/bin/dwmblocks"
 link_file "$DOTFILES/scripts/statusbar" "$HOME/.local/bin/statusbar"
+
+# Link .xinitrc
+link_file "$DOTFILES/zshrc/xinitrc" "$HOME/.xinitrc"
+
+# --- System Updates, Dependencies, & Compilation ---
+echo "🔄 Updating package databases..."
+sudo pacman -Syy
+
+echo "📦 Installing Xorg, dwm dependencies, and core utilities..."
+sudo pacman -S --needed xorg-server xorg-xinit xorg-xrandr xorg-xsetroot chromium nitrogen picom wget kitty base-devel
+
+# Compile custom dwm and dmenu from their linked locations
+echo "🛠️  Compiling dwm..."
+if [ -d "$HOME/.config/dwm" ]; then
+    cd "$HOME/.config/dwm"
+    sudo make clean install
+fi
+
+echo "🛠️  Compiling dmenu..."
+if [ -d "$HOME/.local/bin/dmenu" ]; then
+    cd "$HOME/.local/bin/dmenu"
+    sudo make clean install
+fi
+
+# Go back to the dotfiles directory just in case
+cd "$DOTFILES"
 
 # --- Install Oh My Zsh ---
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
