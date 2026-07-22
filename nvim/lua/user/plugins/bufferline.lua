@@ -25,7 +25,7 @@ return {
         {
           filetype = 'neo-tree',
           text = function()
-            return ' '..vim.fn.fnamemodify(vim.fn.getcwd(), ':~')
+            return ' ' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':~')
           end,
           highlight = 'StatusLineComment',
           text_align = 'left',
@@ -36,7 +36,7 @@ return {
         delay = 0,
         reveal = { "close" },
       },
-      separator_style = 'slant',
+      separator_style = 'slope', -- slant, slope, thick, thin
       modified_icon = '',
       custom_areas = {
         left = function()

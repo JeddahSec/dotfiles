@@ -1,5 +1,3 @@
--- File tree sidebar configuration with enhancements
-
 return {
   'nvim-neo-tree/neo-tree.nvim',
   cmd = 'Neotree',
@@ -23,13 +21,58 @@ return {
         },
         highlights = {
           statusline = {
-            focused = { bg = '#9d7cd8' },
-            unfocused = { bg = '#9d7cd8' },
+            -- Doom One blue instead of tokyonight purple
+            focused = { bg = '#51afef', fg = '#282c34', bold = true },
+            unfocused = { bg = '#3f444a', fg = '#bbc2cf' },
           },
         },
       },
     },
   },
+  config = function(_, opts)
+    -- Doom One palette (dark, high contrast)
+    local colors = {
+      bg0 = '#282c34',
+      bg1 = '#2f333d',
+      bg2 = '#3f444a',
+      bg3 = '#4f5766',
+      fg = '#bbc2cf',
+      grey1 = '#5B6268',
+      red = '#ff6c6b',
+      orange = '#da8548',
+      yellow = '#ECBE7B',
+      green = '#98be65',
+      aqua = '#46D9FF',
+      blue = '#51afef',
+      purple = '#c678dd',
+      color1 = '#23272e',
+    }
+
+    -- Custom highlight groups tying Neo-tree into Doom One
+    local set_hl = vim.api.nvim_set_hl
+    set_hl(0, 'NeoTreeNormal', { bg = colors.bg0, fg = colors.fg })
+    set_hl(0, 'NeoTreeNormalNC', { bg = colors.bg0, fg = colors.fg })
+    set_hl(0, 'NeoTreeWinSeparator', { fg = colors.bg2, bg = colors.bg0 })
+    set_hl(0, 'NeoTreeFloatBorder', { fg = colors.blue, bg = colors.bg0 })
+    set_hl(0, 'NeoTreeFloatTitle', { fg = colors.bg0, bg = colors.blue, bold = true })
+    set_hl(0, 'NeoTreeRootName', { fg = colors.blue, bold = true })
+    set_hl(0, 'NeoTreeDirectoryIcon', { fg = colors.blue })
+    set_hl(0, 'NeoTreeDirectoryName', { fg = colors.blue })
+    set_hl(0, 'NeoTreeSymbolicLinkTarget', { fg = colors.purple })
+    set_hl(0, 'NeoTreeIndentMarker', { fg = colors.bg3 })
+    set_hl(0, 'NeoTreeGitAdded', { fg = colors.green })
+    set_hl(0, 'NeoTreeGitModified', { fg = colors.yellow })
+    set_hl(0, 'NeoTreeGitDeleted', { fg = colors.red })
+    set_hl(0, 'NeoTreeGitUntracked', { fg = colors.orange })
+    set_hl(0, 'NeoTreeGitConflict', { fg = colors.red, bold = true })
+    set_hl(0, 'SidebarTabActive', { fg = colors.bg0, bg = colors.blue, bold = true })
+    set_hl(0, 'SidebarTabInactive', { fg = colors.grey1, bg = colors.bg0 })
+    set_hl(0, 'SidebarTabActiveSeparator', { fg = colors.blue, bg = colors.bg1 })
+    set_hl(0, 'SidebarTabInactiveSeparator', { fg = colors.bg2, bg = colors.bg1 })
+    set_hl(0, 'StatusLineComment', { fg = colors.grey1, bg = colors.color1 })
+
+    require('neo-tree').setup(opts)
+  end,
   opts = {
     close_if_last_window = true,
     hide_root_node = true,
@@ -42,11 +85,11 @@ return {
     source_selector = {
       winbar = true,
       statusline = false,
-      separator = { left = '', right = '' },
+      separator = { left = '', right = '' },
       show_separator_on_edge = true,
       highlight_tab = 'SidebarTabInactive',
       highlight_tab_active = 'SidebarTabActive',
-      highlight_background = 'StatusLine',
+      highlight_background = 'NeoTreeNormal',
       highlight_separator = 'SidebarTabInactiveSeparator',
       highlight_separator_active = 'SidebarTabActiveSeparator',
     },

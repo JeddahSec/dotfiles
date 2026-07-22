@@ -10,44 +10,56 @@ return {
     { 'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release' },
   },
   keys = {
-    { '<leader>f', function() require('telescope.builtin').find_files() end, desc = 'Find files' },
+    { '<leader>f', function() require('telescope.builtin').find_files() end,                                                 desc = 'Find files' },
     { '<leader>F', function() require('telescope.builtin').find_files({ no_ignore = true, prompt_title = 'All Files' }) end, desc = 'Find all files' },
-    { '<leader>b', function() require('telescope.builtin').buffers() end, desc = 'Find buffers' },
-    { '<leader>g', function() require('telescope').extensions.live_grep_args.live_grep_args({
-      prompt_title = 'Grep Project',
-      vimgrep_arguments = {
-        "rg",
-        "--hidden",
-        "-L",
-        "--color=never",
-        "--sort=path",
-        "--no-heading",
-        "--with-filename",
-        "--line-number",
-        "--column",
-        "--smart-case",
-      }
-    }) end, desc = 'Grep project' },
-    { '<leader>G', function() require('telescope').extensions.live_grep_args.live_grep_args({
-      prompt_title = 'Grep All Files',
-      vimgrep_arguments = {
-        "rg",
-        "--hidden",
-        "--no-ignore",
-        "-L",
-        "--color=never",
-        "--sort=path",
-        "--no-heading",
-        "--with-filename",
-        "--line-number",
-        "--column",
-        "--smart-case",
-      },
-    }) end, desc = 'Grep all files' },
-    { '<leader>h', function() require('telescope.builtin').help_tags() end, desc = 'Help tags' },
+    { '<leader>b', function() require('telescope.builtin').buffers() end,                                                    desc = 'Find buffers' },
+    {
+      '<leader>g',
+      function()
+        require('telescope').extensions.live_grep_args.live_grep_args({
+          prompt_title = 'Grep Project',
+          vimgrep_arguments = {
+            "rg",
+            "--hidden",
+            "-L",
+            "--color=never",
+            "--sort=path",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+          }
+        })
+      end,
+      desc = 'Grep project'
+    },
+    {
+      '<leader>G',
+      function()
+        require('telescope').extensions.live_grep_args.live_grep_args({
+          prompt_title = 'Grep All Files',
+          vimgrep_arguments = {
+            "rg",
+            "--hidden",
+            "--no-ignore",
+            "-L",
+            "--color=never",
+            "--sort=path",
+            "--no-heading",
+            "--with-filename",
+            "--line-number",
+            "--column",
+            "--smart-case",
+          },
+        })
+      end,
+      desc = 'Grep all files'
+    },
+    { '<leader>h', function() require('telescope.builtin').help_tags() end,            desc = 'Help tags' },
     { '<leader>s', function() require('telescope.builtin').lsp_document_symbols() end, desc = 'Show document symbols' },
   },
-  config = function ()
+  config = function()
     local actions = require('telescope.actions')
 
     require('telescope').setup({
