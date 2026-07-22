@@ -14,7 +14,7 @@ disable_ligatures never
 # THEME & LOOK
 # =====================================================================
 # BEGIN_KITTY_THEME
-# Everforest Dark Soft
+# Everforest Dark Medium
 include current-theme.conf
 # END_KITTY_THEME
 
