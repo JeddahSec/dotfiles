@@ -91,6 +91,8 @@ return {
       set_hl(0, 'IblIndent', { fg = colors.grey })
       set_hl(0, 'IblScope', { fg = colors.fg_alt })
       set_hl(0, 'CopilotSuggestion', { fg = colors.fg_alt })
+
+      set_hl(0, "@module", { fg = "#bbc2cf" })
     end
 
     -- Set as active colorscheme
