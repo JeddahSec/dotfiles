@@ -25,6 +25,7 @@ dottiles/
 │   ├── arp_scan.py       # ARP network scanner
 │   ├── arp_spoof.py      # ARP spoofing tool
 │   ├── dns_sniffer.py    # DNS traffic sniffer
+│   ├── http_sniffer.py   # HTTP traffic sniffer
 │   ├── icmp_scanner.py   # ICMP-based host scanner
 │   ├── macchanger.py     # MAC address changer
 │   └── port_scanner.py   # TCP port scanner
@@ -41,7 +42,7 @@ dottiles/
 - **nvim/** – Neovim setup (plugins, keybindings, and editor config).
 - **scripts/** – Custom shell scripts, including the status bar generator.
 - **tmux/** – Terminal multiplexer configuration.
-- **tools/** – Python-based network utilities (ARP scanning/spoofing, DNS sniffing, ICMP scanning, MAC changing, port scanning). ⚠️ Intended for authorized security testing and learning only — see [Disclaimer](#disclaimer).
+- **tools/** – Python-based network utilities (ARP scanning/spoofing, DNS/HTTP sniffing, ICMP scanning, MAC changing, port scanning). ⚠️ Intended for authorized security testing and learning only — see [Disclaimer](#disclaimer).
 - **zshrc/** – Shell and X session files: `.zshrc`, `.xinitrc`, and `.xprofile`.
 - **install** – Script to symlink/copy these configs into place on a fresh system.
 
@@ -65,7 +66,7 @@ chmod +x install
 
 ## Disclaimer
 
-The scripts under `tools/` (ARP scanning/spoofing, DNS sniffing, port/ICMP scanning, MAC changing) interact with network traffic and can disrupt or compromise systems you don't own. Use them only on networks and devices you own or have explicit permission to test. The author is not responsible for misuse.
+The scripts under `tools/` (ARP scanning/spoofing, DNS/HTTP sniffing, port/ICMP scanning, MAC changing) interact with network traffic and can disrupt or compromise systems you don't own. Use them only on networks and devices you own or have explicit permission to test. The author is not responsible for misuse.
 
 ## License
 
