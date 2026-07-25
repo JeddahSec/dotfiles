@@ -244,11 +244,11 @@ static const Key keys[] = {
 
 
 /* application bindings */
-	{ MODKEY,			XK_m,          spawn,      {.v = (const char*[]){ "st", "-e", "termusic", NULL } } },
+	{ MODKEY,			XK_m,          spawn,      {.v = (const char*[]){ "kitty", "-e", "termusic", NULL } } },
 	{ MODKEY,			XK_w,          spawn,      {.v = (const char*[]){ BROWSER, NULL } } },
-	{ MODKEY,			XK_f,          spawn,      {.v = (const char*[]){ "st", "-e", "fff", NULL } } },
-	{ MODKEY,			XK_n,          spawn,      {.v = (const char*[]){ "st", "-e", "nvim", NULL } } },
-	{ MODKEY|ShiftMask,	XK_h,          spawn,      {.v = (const char*[]){ "st", "-e", "htop", NULL } } },
+	{ MODKEY,			XK_f,          spawn,      {.v = (const char*[]){ "kitty", "-e", "spf", NULL } } },
+	{ MODKEY,			XK_n,          spawn,      {.v = (const char*[]){ "kitty", "-e", "nvim", NULL } } },
+	{ MODKEY|ShiftMask,	XK_h,          spawn,      {.v = (const char*[]){ "kitty", "-e", "htop", NULL } } },
 	{ MODKEY,			XK_p,          spawn,      {.v = (const char*[]){ "darktable", NULL } } },
 
 
@@ -307,7 +307,7 @@ static const Button buttons[] = {
 	{ ClkStatusText,		ShiftMask,	Button1,	sigstatusbar,	{.i = 6} },
 #endif
 
-	{ ClkStatusText,        ShiftMask,	Button3,	spawn,          SHCMD("st -e nvim ~/.local/bin/dwmblocks/blocks.h") },
+	{ ClkStatusText,        ShiftMask,	Button3,	spawn,          SHCMD("st -e nvim ~/.local/src/dwmblocks/blocks.h") },
 	{ ClkClientWin,			MODKEY,		Button1,	movemouse,      {0} }, /* left click */
 	{ ClkClientWin,			MODKEY,		Button2,	defaultgaps,    {0} }, /* middle click */
 	{ ClkClientWin,			MODKEY,		Button3,	resizemouse,    {0} }, /* right click */
