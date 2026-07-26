@@ -24,7 +24,7 @@ local colors = {
 }
 
 return {
-  'NTBBloodbath/doom-one.nvim',
+  'romgrk/doom-one.vim',
   lazy = false,    -- Load immediately on startup
   priority = 1000, -- Ensure it loads before other UI components
   config = function()

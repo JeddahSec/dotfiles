@@ -15,6 +15,8 @@ require('lazy').setup('user.plugins', {
     notify = false,
   },
   install = {
-    colorscheme = { 'doom-one' },
+    -- colorscheme = { 'doom-one' },
   },
 })
+
+vim.cmd.colorscheme('react-theme')

@@ -28,7 +28,7 @@ return {
       'html_tags',
       'http',
       'ini',
-      'javascript',
+      -- 'javascript',
       'json',
       'lua',
       'make',
