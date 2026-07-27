@@ -14,8 +14,7 @@ usermodmap="$HOME/.Xmodmap"
 sysresources="$xinitdir/.Xresources"
 sysmodmap="$xinitdir/.Xmodmap"
 
-# merge in defaults and keymaps
-
+# Merge in defaults and keymaps
 if [ -f "$sysresources" ]; then
     if [ -x /usr/bin/cpp ] ; then
         "$xrdb" -merge "$sysresources"
@@ -40,37 +39,57 @@ if [ -f "$usermodmap" ]; then
     "$xmodmap" "$usermodmap"
 fi
 
-# start some nice programs
-
+# Start Xinit scripts (Important for Freedesktop / D-Bus setup)
 if [ -d "$xinitdir"/xinitrc.d ] ; then
-        for f in "$xinitdir/xinitrc.d"/?*.sh ; do
-                [ -x "$f" ] && . "$f"
-        done
-        unset f
+    for f in "$xinitdir/xinitrc.d"/?*.sh ; do
+        [ -x "$f" ] && . "$f"
+    done
+    unset f
 fi
 
+# =========================================================
+# 1. Environment Variables for File Chooser & Portals
+# =========================================================
+export XDG_CURRENT_DESKTOP=GNOME
+export XDG_SESSION_TYPE=x11
+export GTK_USE_PORTAL=1
 
-#wallpaper
-~/.local/src/statusbar/pywal16 &
+# Update DBus & Systemd environment variables
+if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+    dbus-update-activation-environment --systemd --all
+fi
 
-#Notify
+# Restart desktop portal services to pick up new environment
+systemctl --user restart xdg-desktop-portal-gtk xdg-desktop-portal 2>/dev/null &
+
+
+# =========================================================
+# 2. Background Programs
+# =========================================================
+# Screen Saver & Power Management
+xset s off &
+xset -dpms &
+
+# Notifications
 dunst &
 
-#Mount Drives
-udiskie &
-
-#Compositor
+# Compositor & Status Bar
 picom -f &
-
-#Wallpaper
-nitrogen --restore &
 dwmblocks &
 
-dbus-launch & pulseaudio --start &
+# Wallpaper & Color Scheme
+~/.local/src/statusbar/pywal16 &
+nitrogen --restore &
+
+# Tray Applications
+udiskie -t &
+nm-applet &
 
 
-# #Execute DWM
+# =========================================================
+# 3. Execute DWM with DBus Session
+# =========================================================
+# We wrap DWM inside dbus-run-session to ensure full D-Bus support
 while true; do
-		dwm >/dev/null 2>&1
+    dbus-run-session dwm >/dev/null 2>&1
 done
-

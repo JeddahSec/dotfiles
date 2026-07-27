@@ -7,16 +7,19 @@
 ```
 dottiles/
 ├── config/
+│   ├── bat             # bat (cat replacement) config/theme
 │   ├── dmenu          # dmenu configuration
 │   ├── dunst           # notification daemon config
 │   ├── dwm             # window manager config/patches
 │   ├── dwmblocks       # statusbar blocks for dwm
 │   ├── picom           # compositor config
 │   ├── qutebrowser     # browser config
-│   └── rofi            # application launcher config
+│   ├── rofi            # application launcher config
+│   └── vscode          # VS Code settings/keybindings
 ├── install             # install script
 ├── kitty               # terminal emulator config
-├── nvim                 # Neovim configuration
+├── nvim/
+│   └── colors           # custom colorschemes (e.g. react-theme.lua)
 ├── scripts/
 │   ├── statusbar        # statusbar scripts
 │   └── t                # misc helper script
@@ -37,9 +40,9 @@ dottiles/
 
 ## What's inside
 
-- **config/** – Configuration files for a lightweight DWM-based desktop: window manager, status bar, compositor, notifications, launcher, and browser.
+- **config/** – Configuration files for a lightweight DWM-based desktop: window manager, status bar, compositor, notifications, launcher, browser, plus `bat` (a `cat` replacement) and VS Code settings.
 - **kitty/** – Fast, GPU-accelerated terminal emulator config.
-- **nvim/** – Neovim setup (plugins, keybindings, and editor config).
+- **nvim/** – Neovim setup (plugins, keybindings, editor config, and a custom colorscheme).
 - **scripts/** – Custom shell scripts, including the status bar generator.
 - **tmux/** – Terminal multiplexer configuration.
 - **tools/** – Python-based network utilities (ARP scanning/spoofing, DNS/HTTP sniffing, ICMP scanning, MAC changing, port scanning). ⚠️ Intended for authorized security testing and learning only — see [Disclaimer](#disclaimer).
@@ -61,7 +64,8 @@ chmod +x install
 
 - A Linux distribution (Arch-based recommended)
 - `dwm`, `dmenu`, `dunst`, `picom`, `rofi`, `qutebrowser`
-- `kitty`, `neovim`, `tmux`, `zsh`
+- `kitty`, `neovim`, `tmux`, `zsh`, `bat`
+- VS Code (optional, for the `config/vscode` settings)
 - `python3` (for the tools in `tools/`)
 
 ## Disclaimer

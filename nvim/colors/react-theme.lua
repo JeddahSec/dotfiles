@@ -59,7 +59,7 @@ local p = {
 -- Mappings to bridge snippet variables to the palette
 local colors = {
   base   = p.bg,
-  bg_alt = p.bg_dark,
+  bg_alt = p.bg,
   fg     = p.fg,
   fg_alt = p.fg_dim,
   grey   = p.grey_blue,
@@ -244,9 +244,9 @@ hl("CmpItemKindKeyword", { fg = p.purple })
 -- Custom Plugin Highlights (Telescope, NeoTree, Bufferline, Indent-Blankline, etc.)
 set_hl(0, 'TelescopeNormal', { bg = colors.bg_alt, fg = colors.fg })
 set_hl(0, 'TelescopeBorder', { bg = colors.bg_alt, fg = colors.bg_alt })
-set_hl(0, 'TelescopePromptNormal', { bg = colors.base })
-set_hl(0, 'TelescopePromptBorder', { bg = colors.base, fg = colors.base })
-set_hl(0, 'TelescopePromptTitle', { bg = colors.base, fg = colors.teal })
+set_hl(0, 'TelescopePromptNormal', { bg = colors.bg_alt })
+-- set_hl(0, 'TelescopePromptBorder', { bg = colors.bg_alt, fg = colors.base })
+set_hl(0, 'TelescopePromptTitle', { bg = colors.bg_alt, fg = colors.teal })
 set_hl(0, 'TelescopePreviewTitle', { bg = colors.bg_alt, fg = colors.bg_alt })
 set_hl(0, 'TelescopeResultsTitle', { bg = colors.bg_alt, fg = colors.bg_alt })
 

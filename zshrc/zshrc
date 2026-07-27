@@ -69,9 +69,10 @@ if command -v eza &> /dev/null; then
 fi
 
 if command -v bat &> /dev/null; then
-    alias cat='bat --theme=base16'
-    alias catn='bat --style=plain --theme=base16'
-    alias catnp='bat --style=plain --paging=never --theme=base16'
+
+    alias cat='bat --theme="ReactTheme"'
+    alias catn='bat --style=plain --theme="ReactTheme"'
+    alias catnp='bat --style=plain --paging=never --theme="ReactTheme"'
 fi
 
 # Pacman & Yay/Paru
@@ -135,10 +136,10 @@ if command -v fzf &> /dev/null; then
     --padding=0,1
     --margin=4,10
     --color=dark
-    --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8
-    --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc
-    --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8
-    --color=selected-bg:#45475a,border:#1e1e2e,gutter:-1
+    --color=bg+:#2f333d,bg:#282c34,spinner:#ff6c6b,hl:#ff6c6b
+    --color=fg:#bbc2cf,header:#ff6c6b,info:#51afef,pointer:#ff6c6b
+    --color=marker:#98be65,fg+:#bbc2cf,prompt:#98be65,hl+:#ff6c6b
+    --color=selected-bg:#3f444a,border:#282c34,gutter:-1
     '
 
 fi

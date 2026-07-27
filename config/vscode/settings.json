@@ -1,0 +1,273 @@
+{
+    /* ======================
+       Window & General
+    ====================== */
+    "window.newWindowDimensions": "inherit",
+    "window.nativeFullScreen": true,
+    "window.zoomLevel": 3,
+    "window.customTitleBarVisibility": "never",
+    "window.titleBarStyle": "native",
+    "window.menuBarVisibility": "hidden",
+    "window.commandCenter": false,
+    "window.customMenuBarAltFocus": false,
+    "window.enableMenuBarMnemonics": false,
+    "security.workspace.trust.untrustedFiles": "open",
+
+    /* ======================
+       Editor Behavior
+    ====================== */
+    "editor.copyWithSyntaxHighlighting": false,
+    "editor.emptySelectionClipboard": false,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.snippetSuggestions": "top",
+    "editor.detectIndentation": false,
+    "editor.hover.delay": 1500,
+    "editor.hover.enabled": "on",
+    "editor.matchBrackets": "never",
+    "editor.colorDecorators": false,
+    "editor.lightbulb.enabled": "off",
+    "editor.selectionHighlight": false,
+    "editor.overviewRulerBorder": false,
+    "editor.renderLineHighlight": "none",
+    "editor.occurrencesHighlight": "off",
+    "editor.renderControlCharacters": false,
+    "editor.hideCursorInOverviewRuler": true,
+    "editor.gotoLocation.multipleReferences": "goto",
+    "editor.gotoLocation.multipleDefinitions": "goto",
+    "editor.gotoLocation.multipleDeclarations": "goto",
+    "editor.gotoLocation.multipleImplementations": "goto",
+    "editor.gotoLocation.multipleTypeDefinitions": "goto",
+    "editor.wordSeparators": "`~!@#%^&*()=+[{]}\\|;:'\",.<>/?",
+    "editor.linkedEditing": true,
+    "editor.accessibilitySupport": "off",
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 120,
+    "editor.inlineSuggest.suppressSuggestions": true,
+    "editor.quickSuggestions": {
+        "strings": true,
+    },
+    "editor.guides.indentation": false,
+    "editor.minimap.enabled": false,
+    "editor.minimap.maxColumn": 250,
+
+    /* ======================
+       Editor Appearance / Typography
+    ====================== */
+    "editor.fontFamily": "GeistMono Nerd Font Propo,Geist Mono,JetBrainsMono Nerd Font, Fira Code",
+    "editor.fontSize": 24,
+    "editor.fontWeight": "400",
+    "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
+    "editor.lineHeight": 55,
+    "editor.suggestFontSize": 20,
+    "editor.suggestLineHeight": 30,
+    "editor.cursorBlinking": "solid",
+    "editor.smoothScrolling": true,
+    "editor.cursorSmoothCaretAnimation": "explicit",
+    "editor.padding.top": 20,
+    "editor.padding.bottom": 20,
+    "editor.stickyScroll.enabled": false,
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": [
+                    "comment",
+                    "keyword",
+                    "variable.language",
+                    "entity.other.attribute-name.html",
+                    "entity.other.attribute-name",
+                    "keyword.control",
+                    "storage.type",
+                    "comment.block",
+                    "comment.line",
+                ],
+                "settings": {
+                    "fontStyle": "",
+                },
+            },
+        ],
+    },
+
+    /* ======================
+       Files
+    ====================== */
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "files.autoSave": "afterDelay",
+    "files.associations": {
+        ".php_cs": "php",
+        ".php_cs.dist": "php",
+    },
+
+    /* ======================
+       Search
+    ====================== */
+    "search.useIgnoreFiles": false,
+    "search.exclude": {
+        // Hide everything in /vendor, except the "laravel" and "livewire" folder.
+        "**/vendor/{[^l],?[^ai]}*": true,
+        // Hide everything in /public, except "index.php"
+        "**/public/{[^i],?[^n]}*": true,
+        "**/node_modules": true,
+        "**/dist": true,
+        "**/_ide_helper.php": true,
+        "**/composer.lock": true,
+        "**/package-lock.json": true,
+        "storage": true,
+        ".phpunit.result.cache": true,
+    },
+
+    /* ======================
+       Diff / SCM / Git
+    ====================== */
+    "diffEditor.ignoreTrimWhitespace": false,
+    "diffEditor.renderSideBySide": false,
+    "scm.diffDecorations": "none",
+    "git.decorations.enabled": false,
+    "problems.decorations.enabled": false,
+
+    /* ======================
+       Formatters (Prettier / language-specific)
+    ====================== */
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.requireConfig": false,
+    "prettier.useEditorConfig": false,
+    "prettier.tabWidth": 4,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+    },
+    "[tailwindcss]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+    },
+    "[html]": {
+        "editor.defaultFormatter": "apility.beautify-blade",
+        "editor.formatOnSave": true,
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features",
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+    },
+    "[php]": {
+        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+    },
+    // Deprecated / unused now that [python].editor.defaultFormatter is set above —
+    // safe to delete, kept here only because it was in the original file.
+    "python.formatting.provider": "none",
+    "python.createEnvironment.trigger": "off",
+    "php.suggest.basic": false,
+    "vetur.format.options.tabSize": 4,
+
+    /* ======================
+       Language Tooling (Emmet / Tailwind)
+    ====================== */
+    "emmet.includeLanguages": {
+        "blade": "html",
+        "vue-html": "html",
+        "vue": "html",
+        "react": "html",
+        "javascript": "html",
+    },
+    "tailwindCSS.includeLanguages": {
+        "plaintext": "html",
+    },
+    "tailwindCSS.experimental.configFile": null,
+
+    /* ======================
+       Explorer
+    ====================== */
+    "explorer.compactFolders": false,
+    "explorer.confirmDragAndDrop": false,
+    "explorer.confirmDelete": false,
+    "explorer.decorations.badges": false,
+    "explorer.sortOrder": "type",
+
+    /* ======================
+       Workbench / UI Chrome
+    ====================== */
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.editor.showTabs": "none",
+    "workbench.editor.editorActionsLocation": "hidden",
+    "workbench.tree.renderIndentGuides": "none",
+    "workbench.tree.indent": 15,
+    "workbench.tree.enableStickyScroll": false,
+    "workbench.tips.enabled": false,
+    "workbench.startupEditor": "none",
+    "workbench.activityBar.location": "hidden",
+    "workbench.statusBar.visible": false,
+    "workbench.layoutControl.enabled": false,
+    "workbench.productIconTheme": "material-product-icons",
+    "workbench.sideBar.location": "right",
+    "workbench.list.smoothScrolling": true,
+    "workbench.colorTheme": "React Theme",
+    "workbench.iconTheme": "material-icon-theme",
+    "workbench.colorCustomizations": {
+        "editorLineNumber.foreground": "#3e4451",
+    },
+    "breadcrumbs.enabled": false,
+    "chat.commandCenter.enabled": false,
+    "material-icon-theme.saturation": 0,
+    "material-icon-theme.hidesExplorerArrows": true,
+    "material-icon-theme.files.color": "#42a5f5",
+    "notebook.output.wordWrap": true,
+
+    /* ======================
+       Terminal
+    ====================== */
+    "terminal.integrated.lineHeight": 1,
+    "terminal.integrated.fontSize": 20,
+    "terminal.integrated.smoothScrolling": true,
+
+    /* ======================
+       CodeSnap
+    ====================== */
+    "codesnap.containerPadding": "8em",
+    "codesnap.boxShadow": "rgba(0, 0, 0, 0.55) 0px 12px 24px",
+    "codesnap.backgroundColor": "#FFC540",
+    "codesnap.showLineNumbers": true,
+    "codesnap.roundedCorners": true,
+
+    /* ======================
+       Extensions Misc
+    ====================== */
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1,
+    },
+    "glassit.alpha": 220,
+
+    /* ======================
+       Custom CSS & JS Loader
+    ====================== */
+    "vscode_custom_css.imports": [
+        "file:///home/js/.config/Code/custom-vscode.css",
+        "file:///home/js/.config/Code/vscode-script.js",
+    ],
+}
