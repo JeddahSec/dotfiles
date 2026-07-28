@@ -57,7 +57,7 @@ static char dmenufont[]             = "monospace:size=18";
 static const char *fonts[]          = { "JetBrainsMono NF:size=18", "NotoColorEmoji:pixelsize=22:antialias=true:autohint=true"  };
 
 /* default colors used if xrdb is not loaded */
-static char normbgcolor[]           = "#2e3440";
+static char normbgcolor[]           = "#282c34";
 static char normbordercolor[]       = "#4c566a";
 static char normfgcolor[]           = "#d8dee9";
 static char selfgcolor[]            = "#eceff4";
