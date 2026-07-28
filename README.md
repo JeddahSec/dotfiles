@@ -24,19 +24,13 @@ dottiles/
 │   ├── statusbar        # statusbar scripts
 │   └── t                # misc helper script
 ├── tmux                 # tmux configuration
-├── tools/
-│   ├── arp_scan.py       # ARP network scanner
-│   ├── arp_spoof.py      # ARP spoofing tool
-│   ├── dns_sniffer.py    # DNS traffic sniffer
-│   ├── http_sniffer.py   # HTTP traffic sniffer
-│   ├── icmp_scanner.py   # ICMP-based host scanner
-│   ├── macchanger.py     # MAC address changer
-│   └── port_scanner.py   # TCP port scanner
 └── zshrc/
     ├── xinitrc            # X session startup config
     ├── xprofile           # X profile/env vars
     └── zshrc               # Zsh shell configuration
 ```
+
+> Network utilities (formerly `tools/`) have moved to a separate repo: [JeddahSec/tools](https://github.com/JeddahSec/tools)
 
 ## What's inside
 
@@ -45,9 +39,10 @@ dottiles/
 - **nvim/** – Neovim setup (plugins, keybindings, editor config, and a custom colorscheme).
 - **scripts/** – Custom shell scripts, including the status bar generator.
 - **tmux/** – Terminal multiplexer configuration.
-- **tools/** – Python-based network utilities (ARP scanning/spoofing, DNS/HTTP sniffing, ICMP scanning, MAC changing, port scanning). ⚠️ Intended for authorized security testing and learning only — see [Disclaimer](#disclaimer).
 - **zshrc/** – Shell and X session files: `.zshrc`, `.xinitrc`, and `.xprofile`.
 - **install** – Script to symlink/copy these configs into place on a fresh system.
+
+> 🛠️ **Network tools** previously in `tools/` now live in their own repo: **[JeddahSec/tools](https://github.com/JeddahSec/tools)** (ARP scanning/spoofing, DNS/HTTP sniffing, ICMP scanning, MAC changing, port scanning).
 
 ## Installation
 
@@ -66,11 +61,6 @@ chmod +x install
 - `dwm`, `dmenu`, `dunst`, `picom`, `rofi`, `qutebrowser`
 - `kitty`, `neovim`, `tmux`, `zsh`, `bat`
 - VS Code (optional, for the `config/vscode` settings)
-- `python3` (for the tools in `tools/`)
-
-## Disclaimer
-
-The scripts under `tools/` (ARP scanning/spoofing, DNS/HTTP sniffing, port/ICMP scanning, MAC changing) interact with network traffic and can disrupt or compromise systems you don't own. Use them only on networks and devices you own or have explicit permission to test. The author is not responsible for misuse.
 
 ## License
 
