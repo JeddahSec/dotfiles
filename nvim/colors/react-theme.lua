@@ -288,7 +288,7 @@ set_hl(0, 'LineNrBelow', { fg = colors.grey })
 
 set_hl(0, 'MsgArea', { bg = colors.bg_alt })
 set_hl(0, 'SpellBad', { undercurl = true, sp = '#7F3A43' })
-set_hl(0, 'IblIndent', { fg = colors.grey })
+set_hl(0, 'IblIndent', { fg = colors.comment })
 set_hl(0, 'IblScope', { fg = colors.fg_alt })
 set_hl(0, 'CopilotSuggestion', { fg = colors.fg_alt })
 
