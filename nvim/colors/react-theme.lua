@@ -26,7 +26,7 @@ local p = {
   selection     = "#353b45", -- editor.selectionBackground / findMatch
   bracket_bg    = "#252b39",
 
-  fg            = "#f8f8f2",
+  fg            = "#a7a7a8",
   fg_dim        = "#bbbbbb", -- sideBar.foreground
   fg_dimmer     = "#999999", -- editorLineNumber.foreground
   comment       = "#3e4451",
@@ -135,6 +135,7 @@ hl("Number", { fg = p.pink })
 hl("Boolean", { fg = p.orange })
 hl("Float", { fg = p.pink })
 hl("Identifier", { fg = p.fg })
+hl("pythonClassVar", { fg = "#e1e2e3" })
 hl("Function", { fg = p.blue })
 hl("Statement", { fg = p.purple })
 hl("Conditional", { fg = p.purple })
