@@ -65,6 +65,8 @@ get_current_temp() {
 
 # Stop redshift process
 stop_redshift() {
+    # First reset the screen temperature to normal
+    redshift -x 2>/dev/null
     if [ -f "$REDSHIFT_PID_FILE" ]; then
         kill -9 "$(cat "$REDSHIFT_PID_FILE")" 2>/dev/null
         rm -f "$REDSHIFT_PID_FILE"
@@ -73,7 +75,6 @@ stop_redshift() {
     echo "off" > "$TEMP_FILE"
     notify-send -t 2000 "Redshift" "Screen temperature reset to normal"
 }
-
 # Start redshift with specific temperature
 start_redshift() {
     local temp=$1
@@ -87,17 +88,15 @@ start_redshift() {
 # Auto mode based on time of day
 auto_mode() {
     stop_redshift
-    redshift -r -t 5500:3500 -l "$(curl -s "https://ipapi.co/json/" | jq -r '.latitude,.longitude' | tr '\n' ':')" &
+    redshift -t 5500:3500 -l "$(curl -s "https://ipapi.co/json/" | jq -r '.latitude,.longitude' | tr '\n' ':')" &
     echo $! > "$REDSHIFT_PID_FILE"
     echo "auto" > "$TEMP_FILE"
     notify-send -t 2000 "Redshift" "Auto mode enabled (5500K day → 3500K night)"
 }
-
 # Show menu with dmenu
 show_menu() {
     local current_temp
     current_temp=$(get_current_temp)
-    
     # Menu options
     local options=()
     options+=("Auto - Time-based temperature")
