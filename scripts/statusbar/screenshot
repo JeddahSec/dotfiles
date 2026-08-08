@@ -1,29 +1,198 @@
 #!/usr/bin/env bash
-# Based on original script by https://github.com/TheGassyNinja
+# Improved screenshot wrapper with multi-backend support, Wayland awareness,
+# clipboard integration, and sensible defaults.
+# Original concept: https://github.com/TheGassyNinja
+
 set -euo pipefail
-export DISPLAY="${DISPLAY:-:0}"
 
-# Output directory: default to $HOME/Screenshots
-OUTDIR="${1:-${HOME}/Pictures/Screenshots}"
-mkdir -p "${OUTDIR}"
+# ── Defaults ──────────────────────────────────────────────────────────
+OUTDIR="${SCREENSHOT_DIR:-$HOME/Pictures/Screenshots}"
+FILENAME_PATTERN="%Y%m%d_%H%M%S.png"
+CLIPBOARD=false
+SELECT_MODE=false
+WINDOW_MODE=false
+SILENT=false
+NOTIFY_CMD="notify-send"
 
-current="$(date +%Y%m%d_%H%M%S).png"
-filepath="${OUTDIR}/${current}"
-
-# Determine screenshot utility
-tool_path="$(command -v import 2>/dev/null || command -v scrot 2>/dev/null)" || {
-    notify-send "Screenshot Tool Missing" "Neither 'import' nor 'scrot' is installed!"
-    echo "Error: No screenshot tool found."; exit 1;
+# ── Helpers ───────────────────────────────────────────────────────────
+die() { printf '%s\n' "$*" >&2; exit 1; }
+notify() {
+    $SILENT && return
+    command -v "$NOTIFY_CMD" >/dev/null 2>&1 || return
+    "$NOTIFY_CMD" "$1" "$2"
 }
-TOOL="$(basename "${tool_path}")"
 
-# Select flags based on tool and optional "-s" argument
+usage() {
+    cat <<'EOF'
+Usage: screenshot [OPTIONS] [OUTPUT-DIRECTORY]
+
+Options:
+  -s, --select       Interactive region selection (default: full screen)
+  -w, --window       Capture active window only
+  -c, --clipboard    Copy image to clipboard instead of saving (or in addition)
+  -f, --filename     Custom strftime pattern for filename (default: %Y%m%d_%H%M%S.png)
+  -n, --no-notify    Suppress desktop notifications
+  -h, --help         Show this help and exit
+
+Environment:
+  SCREENSHOT_DIR     Default output directory (default: ~/Pictures/Screenshots)
+  DISPLAY            X11 display (auto-detected)
+  WAYLAND_DISPLAY    Wayland display (auto-detected)
+
+Examples:
+  screenshot                    # Fullscreen save to default dir
+  screenshot -s                 # Region selection
+  screenshot -w -c /tmp         # Active window to /tmp + clipboard
+EOF
+}
+
+# ── Argument parsing ──────────────────────────────────────────────────
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -s|--select)   SELECT_MODE=true; shift ;;
+        -w|--window)   WINDOW_MODE=true; shift ;;
+        -c|--clipboard) CLIPBOARD=true; shift ;;
+        -n|--no-notify) SILENT=true; shift ;;
+        -f|--filename)  FILENAME_PATTERN="$2"; shift 2 ;;
+        -h|--help)      usage; exit 0 ;;
+        -*)             die "Unknown option: $1" ;;
+        *)              OUTDIR="$1"; shift ;;
+    esac
+done
+
+mkdir -p "$OUTDIR"
+
+# ── Detect display server ─────────────────────────────────────────────
+if [[ -n "${WAYLAND_DISPLAY:-}" ]]; then
+    SESSION="wayland"
+elif [[ -n "${DISPLAY:-}" ]]; then
+    SESSION="x11"
+else
+    # Fallback: assume X11 if we have an X tool, else Wayland
+    SESSION="x11"
+fi
+
+# ── Find best available tool ──────────────────────────────────────────
+find_tool() {
+    local candidates=("$@")
+    for cmd in "${candidates[@]}"; do
+        if command -v "$cmd" >/dev/null 2>&1; then
+            printf '%s' "$cmd"
+            return 0
+        fi
+    done
+    return 1
+}
+
+if [[ "$SESSION" == "wayland" ]]; then
+    TOOL="$(find_tool grim slurp spectacle gnome-screenshot)" || {
+        die "Error: No Wayland screenshot tool found (tried: grim, slurp, spectacle, gnome-screenshot)."
+    }
+else
+    TOOL="$(find_tool maim import scrot spectacle gnome-screenshot xfce4-screenshooter)" || {
+        die "Error: No X11 screenshot tool found (tried: maim, import, scrot, spectacle, gnome-screenshot, xfce4-screenshooter)."
+    }
+fi
+
+# ── Build command ─────────────────────────────────────────────────────
+filename="$(date +"$FILENAME_PATTERN")"
+filepath="${OUTDIR}/${filename}"
+
+cmd=("$TOOL")
 flags=()
-[[ "${TOOL}" == "scrot" && "${2:-}" == "-s" ]] && flags=(--select)
-[[ "${TOOL}" == "import" && "${2:-}" != "-s" ]] && flags=(-window root)
 
-"$TOOL" "${flags[@]}" "${filepath}" || {
-    notify-send "Screenshot Failed" "Could not save screenshot to ${filepath}."
-    exit 1
+case "$TOOL" in
+    grim)
+        # Wayland native; slurp needed for region selection
+        if $SELECT_MODE; then
+            command -v slurp >/dev/null 2>&1 || die "Error: 'slurp' required for region selection under Wayland."
+            region="$(slurp)"
+            flags+=(-g "$region")
+        fi
+        flags+=("$filepath")
+        ;;
+    maim)
+        # Modern X11 replacement
+        $SELECT_MODE && flags+=(-s)
+        $WINDOW_MODE  && flags+=(-i "$(xdotool getactivewindow)")
+        flags+=("$filepath")
+        ;;
+    import)
+        # ImageMagick
+        if $SELECT_MODE; then
+            flags+=()
+        elif $WINDOW_MODE; then
+            flags+=(-window "$(xprop -root 32x '\t$0' _NET_ACTIVE_WINDOW | cut -f 2)")
+        else
+            flags+=(-window root)
+        fi
+        flags+=("$filepath")
+        ;;
+    scrot)
+        $SELECT_MODE && flags+=(-s)
+        $WINDOW_MODE  && flags+=(-u)
+        flags+=("$filepath")
+        ;;
+    spectacle)
+        if $SELECT_MODE; then
+            flags+=(--region --background --nonotify)
+        elif $WINDOW_MODE; then
+            flags+=(--activewindow --background --nonotify)
+        else
+            flags+=(--fullscreen --background --nonotify)
+        fi
+        flags+=(-o "$filepath")
+        ;;
+    gnome-screenshot)
+        if $SELECT_MODE; then
+            flags+=(-a)
+        elif $WINDOW_MODE; then
+            flags+=(-w)
+        fi
+        flags+=(-f "$filepath")
+        ;;
+    xfce4-screenshooter)
+        if $SELECT_MODE; then
+            flags+=(-r)
+        elif $WINDOW_MODE; then
+            flags+=(-w)
+        else
+            flags+=(-f)
+        fi
+        flags+=(-s "$filepath")
+        ;;
+    *)
+        die "Error: Unknown tool '$TOOL'."
+        ;;
+esac
+
+# ── Execute ───────────────────────────────────────────────────────────
+"${cmd[@]}" "${flags[@]}" || {
+    notify "Screenshot Failed" "Could not save screenshot to $filepath"
+    die "Error: Screenshot command failed."
 }
-notify-send "Screenshot Taken" "Saved as ${current} in ${OUTDIR}"
+
+# ── Clipboard ─────────────────────────────────────────────────────────
+if $CLIPBOARD; then
+    if [[ "$SESSION" == "wayland" ]]; then
+        if command -v wl-copy >/dev/null 2>&1; then
+            wl-copy < "$filepath"
+        else
+            notify "Clipboard Warning" "wl-copy not found; image saved but not copied."
+        fi
+    else
+        if command -v xclip >/dev/null 2>&1; then
+            xclip -selection clipboard -t image/png < "$filepath"
+        elif command -v xsel >/dev/null 2>&1; then
+            # xsel doesn't support mimetypes well; fallback warning
+            notify "Clipboard Warning" "xclip recommended; image saved but not reliably copied."
+        else
+            notify "Clipboard Warning" "xclip not found; image saved but not copied."
+        fi
+    fi
+fi
+
+# ── Notify ────────────────────────────────────────────────────────────
+$CLIPBOARD && extra=" (and clipboard)" || extra=""
+notify "Screenshot Taken" "Saved as $filename in $OUTDIR$extra"
+printf '%s\n' "$filepath"
