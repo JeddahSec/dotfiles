@@ -4,7 +4,7 @@ static const Block blocks[] = {
 	/*Icon*/	/*Command*/		/*Update Interval*/	/*Update Signal*/
 	{"", "cat /tmp/recordingicon 2>/dev/null", 0,	9},
 	{"", "recording-status",0,	3},
-	{"", "target-status",5,	0},
+	{"", "dwmblocks-target",5,	0},
 	{"", "vpn-details",5,	0},
 	{"", "dwmblocks_networkmanager",10,	14},
 	{"",  "dwmblocks_disks",          0,  9},

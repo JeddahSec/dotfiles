@@ -1,4 +1,0 @@
-#!/bin/bash
-# ~/.local/bin/set-target
-echo "$@" > ~/.target
-echo "Target set to: $@"

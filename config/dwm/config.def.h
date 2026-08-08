@@ -141,7 +141,8 @@ static const Layout layouts[] = { /* alt glyphs: 󱡗 󱏋 */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbordercolor, "-sf", selfgcolor, NULL };
 static const char *termcmd[]  = { "kitty", NULL };
-
+static const char *targetsetcmd[] = { "dwmblocks-target", "set", NULL };
+static const char *targetclearcmd[] = { "dwmblocks-target", "clear", NULL };
 
 static const Arg tagexec[] = { /* spawn application when tag is middle-clicked */
 	{ .v = termcmd }, /* 1 */
@@ -290,6 +291,9 @@ static const Key keys[] = {
   { MODKEY,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol } },
   { MODKEY,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } },
   { MODKEY,                       XF86XK_AudioMute,        spawn, {.v = mute } },
+
+    { MODKEY, XK_t, spawn, {.v = targetsetcmd } },      // Super+T → set target via dmenu
+    { MODKEY|ShiftMask, XK_t, spawn, {.v = targetclearcmd } }, // Super+Shift+T → clear
 };
 
 
