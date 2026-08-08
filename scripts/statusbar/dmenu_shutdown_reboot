@@ -1,11 +1,24 @@
-
 #!/bin/bash
 
-RET=$(echo -e "shutdown\nreboot\nlogout\ncancel" | dmenu -l 5 -p "Select Action:")
+# Fix PATH so dmenu/systemctl/xdotool are found when run from DWM
+export PATH="/usr/bin:/bin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:$PATH"
 
-case $RET in
-    shutdown) systemctl poweroff ;;
-    reboot) systemctl reboot ;;
-    logout) xdotool key "super+shift+q" ;;
-    *) ;;
+# Use printf instead of echo -e (more portable)
+RET=$(printf "shutdown\nreboot\nlogout\ncancel\n" | dmenu -l 5 -p "Select Action:")
+
+case "$RET" in
+    shutdown)
+        systemctl poweroff
+        ;;
+    reboot)
+        systemctl reboot
+        ;;
+    logout)
+        # More reliable than xdotool for DWM
+        # If you use startx/xinit, this kills the session cleanly:
+        pkill -f "dwm" || xdotool key "super+shift+q"
+        ;;
+    cancel|"")
+        exit 0
+        ;;
 esac
