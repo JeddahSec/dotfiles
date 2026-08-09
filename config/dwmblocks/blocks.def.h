@@ -5,7 +5,7 @@ static const Block blocks[] = {
 	{"", "cat /tmp/recordingicon 2>/dev/null", 0,	9},
 	{"", "recording-status",0,	3},
 	{"", "dwmblocks-target",5,	0},
-	{"", "vpn-details",5,	0},
+	{"", "dwmblocks-vpn",5,	0},
 	{"", "dwmblocks_networkmanager",10,	14},
 	{"",  "dwmblocks_disks",          0,  9},
 	{"", "dwmblocks_systemstats",   10,	14},

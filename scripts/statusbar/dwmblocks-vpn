@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ── Config ────────────────────────────────────────────────────────────
+ICON_UP="${ICON_UP:-}"
+ICON_DOWN="${ICON_DOWN:-}"
+ICON_CONNECTING="${ICON_CONNECTING:-}"
+
+# ── Helpers ───────────────────────────────────────────────────────────
+list_interfaces() {
+    ip -o link show 2>/dev/null | awk -F': ' '{n=$2; gsub(/@.*/, "", n); print n}'
+}
+
+is_vpn() {
+    case "$1" in
+        tun*|tap*|wg*|ppp*|vpn*|cscotun*|tailscale*|zt*|nordvpn*|proton*)
+            return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+is_up() {
+    local flags
+    flags=$(ip -o link show dev "$1" 2>/dev/null | awk '{print $3}')
+    [[ "$flags" == *"UP"* ]]
+}
+
+get_ips() {
+    # IPv4 only; change to '/inet[6]? /' to include IPv6
+    ip -o addr show dev "$1" 2>/dev/null | awk '/ inet / {print $4}' | tr '\n' ',' | sed 's/,$//'
+}
+
+get_gateway() {
+    ip -o route show default dev "$1" 2>/dev/null | awk '{print $3}' | head -n1
+}
+
+get_wg_endpoint() {
+    command -v wg >/dev/null 2>&1 || return
+    wg show "$1" endpoints 2>/dev/null | awk 'NR==1 {print $2}'
+}
+
+# ── Main ──────────────────────────────────────────────────────────────
+get_vpn_details() {
+    local iface ips gw endpoint
+    local primary="" count=0
+
+    while IFS= read -r iface; do
+        [[ -n "$iface" ]] || continue
+        is_vpn "$iface" || continue
+        is_up "$iface" || continue
+
+        ((count++))
+
+        # Only build detail string for the first active VPN
+        if [[ -z "$primary" ]]; then
+            ips=$(get_ips "$iface")
+            gw=$(get_gateway "$iface")
+
+            local info="$iface"
+            [[ -n "$ips" ]] && info+=" $ips"
+            [[ -n "$gw" ]] && info+=" via $gw"
+
+            # WireGuard: show endpoint if no gateway
+            if [[ -z "$gw" && "$iface" == wg* ]]; then
+                endpoint=$(get_wg_endpoint "$iface")
+                [[ -n "$endpoint" ]] && info+=" → $endpoint"
+            fi
+
+            primary="$info"
+        fi
+    done < <(list_interfaces)
+
+    if ((count == 0)); then
+        if pgrep -x openvpn >/dev/null 2>&1 || pgrep -x openconnect >/dev/null 2>&1; then
+            echo "$ICON_CONNECTING Connecting..."
+        else
+            echo "$ICON_DOWN Disconnected"
+        fi
+        return 1
+    fi
+
+    if ((count == 1)); then
+        echo "$ICON_UP $primary"
+    else
+        echo "$ICON_UP $primary (+$((count - 1)))"
+    fi
+}
+
+get_vpn_details
