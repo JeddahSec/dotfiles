@@ -39,19 +39,36 @@ read_target() {
     sed -n 's/^[[:space:]]*//;s/[[:space:]]*$//;/./p;q' "$TARGET_FILE" 2>/dev/null
 }
 
+# ── Reverse DNS (with timeout so bar never freezes) ───────────────────
+resolve_ip() {
+    local ip="$1" host
+    if command -v timeout >/dev/null 2>&1; then
+        host=$(timeout 1 getent hosts "$ip" 2>/dev/null | awk 'NR==1 {print $2}')
+    else
+        host=$(getent hosts "$ip" 2>/dev/null | awk 'NR==1 {print $2}')
+    fi
+    [[ -n "$host" && "$host" != "$ip" ]] && printf '%s' "$host"
+}
+
 # ── Main status output ────────────────────────────────────────────────
 status() {
-    local target host
+    local target host resolved
     target="$(read_target)" || { echo "$ICON_NONE No target"; return; }
     [[ -z "$target" ]] && { echo "$ICON_NONE No target"; return; }
 
-    # Strip port if present
+    # Strip port if present (e.g., 127.0.0.1:8080)
     host="$target"
     if [[ "$target" == *:* && "${target##*:}" =~ ^[0-9]+$ ]]; then
         host="${target%:*}"
     fi
+
     if is_ipv4 "$host"; then
-        echo "$ICON_IP $target"
+        resolved=$(resolve_ip "$host")
+        if [[ -n "$resolved" ]]; then
+            echo "$ICON_IP $resolved - $target"
+        else
+            echo "$ICON_IP $target"
+        fi
     elif is_hostname "$host"; then
         echo "$ICON_HOST $target"
     else
@@ -65,11 +82,9 @@ case "${1:-}" in
         if [[ -n "${2:-}" ]]; then
             printf '%s\n' "$2" > "$TARGET_FILE"
         else
-            # DWM standard: use dmenu if no arg given
             target="$(dmenu -p 'Set target:' < /dev/null)" || exit 0
             [[ -n "$target" ]] && printf '%s\n' "$target" > "$TARGET_FILE"
         fi
-        # Signal dwmblocks to refresh immediately (block 16 = SIGUSR1+16)
         pkill -RTMIN+16 dwmblocks 2>/dev/null || true
         ;;
     clear)
