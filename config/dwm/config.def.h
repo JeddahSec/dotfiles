@@ -145,6 +145,7 @@ static const char *targetsetcmd[] = { "dwmblocks-target", "set", NULL };
 static const char *targetclearcmd[] = { "dwmblocks-target", "clear", NULL };
 static const char *vpnupcmd[]   = { "st", "-e", "sudo", "systemctl", "start", "openvpn-client@htb", NULL };
 static const char *vpndowncmd[] = { "sudo", "systemctl", "stop", "openvpn-client@htb", NULL };
+static const char *recordcmd[] = { "dwm-record", NULL };
 
 static const Arg tagexec[] = { /* spawn application when tag is middle-clicked */
 	{ .v = termcmd }, /* 1 */
@@ -269,7 +270,7 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,				XK_F2,     spawn,       SHCMD("screenshot_extra_features") },
 	{ MODKEY|ControlMask,				XK_F12,     spawn,       SHCMD("redshift-dmenu") },
 	{ MODKEY,				XK_F9,     spawn,       SHCMD("dmenu_shutdown_reboot") },
-	{ MODKEY,				XK_F10,     spawn,       SHCMD("screenrecorder") },
+	// { MODKEY,				XK_F10,     spawn,       SHCMD("screenrecorder") },
 	{ MODKEY|ShiftMask,		XK_F1,     spawn,       SHCMD("screenshot color") },
 	{ MODKEY,				XK_F2,     spawn,       {.v = (const char*[]){ "vb", NULL } } },
 	{ MODKEY|ShiftMask,		XK_F2,     spawn,       {.v = (const char*[]){ "dmenutemp", NULL } } },
@@ -299,6 +300,9 @@ static const Key keys[] = {
 
     { MODKEY, XK_v, spawn, {.v = vpnupcmd } },
     { MODKEY|ShiftMask, XK_v, spawn, {.v = vpndowncmd } },
+    /* ... */
+    { 0, XK_Print, spawn, {.v = recordcmd } },           // PrtSc alone → toggle record
+    /* ... */
 };
 
 

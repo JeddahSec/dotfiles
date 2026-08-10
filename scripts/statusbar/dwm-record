@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PIDFILE="/tmp/recpid"
+ICONFILE="/tmp/recordingicon"
+SIGNAL=3
+
+# ── Check dependencies ────────────────────────────────────────────────
+for cmd in ffmpeg xdpyinfo pactl; do
+    command -v "$cmd" >/dev/null 2>&1 || {
+        notify-send "Missing dependency" "$cmd not found"; exit 1
+    }
+done
+
+get_resolution() {
+    xdpyinfo | awk '/dimensions:/{print $2}'
+}
+
+record() {
+    # Prevent double-start
+    if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+        notify-send "Already recording"
+        exit 1
+    fi
+
+    # Unmute mic (or default source)
+    pactl set-source-mute @DEFAULT_SOURCE@ false || true
+
+    local outdir="$HOME/Videos"
+    mkdir -p "$outdir"
+    local out="$outdir/Video_$(date '+%a__%b%d__%H_%M_%S').mkv"
+    local res
+    res="$(get_resolution)"
+
+    # Single output file with both video + audio interleaved
+    ffmpeg -y \
+        -thread_queue_size 4096 -f x11grab -r 30 -s "$res" -i :0.0 \
+        -thread_queue_size 4096 -f pulse -i default \
+        -fflags +genpts \
+        -c:v libx264 -preset ultrafast -qp 0 -pix_fmt yuv420p \
+        -c:a aac -b:a 192k -ac 2 \
+        -shortest \
+        "$out" &
+
+    local pid=$!
+    echo "$pid" > "$PIDFILE"
+
+    # Verify it actually started
+    sleep 0.5
+    if ! kill -0 "$pid" 2>/dev/null; then
+        rm -f "$PIDFILE"
+        notify-send "Recording failed" "ffmpeg exited immediately"
+        exit 1
+    fi
+
+    printf 'Rec •' > "$ICONFILE"
+    pkill -RTMIN+$SIGNAL dwmblocks 2>/dev/null || true
+    notify-send -t 500 -h string:bgcolor:#a3be8c "Recording started" "$out"
+}
+
+end() {
+    if [[ ! -f "$PIDFILE" ]]; then
+        notify-send "Not recording"
+        exit 1
+    fi
+
+    local pid
+    pid="$(cat "$PIDFILE")"
+
+    # Graceful stop so ffmpeg finalizes the MKV container properly
+    if kill -0 "$pid" 2>/dev/null; then
+        kill -TERM "$pid" 2>/dev/null || true
+        for _ in {1..30}; do
+            kill -0 "$pid" 2>/dev/null || break
+            sleep 0.1
+        done
+        kill -KILL "$pid" 2>/dev/null || true
+    fi
+
+    rm -f "$PIDFILE"
+
+    pactl set-source-mute @DEFAULT_SOURCE@ true || true
+
+    printf '' > "$ICONFILE"
+    pkill -RTMIN+$SIGNAL dwmblocks 2>/dev/null || true
+    notify-send -t 500 -h string:bgcolor:#bf616a "Recording ended"
+}
+
+# ── Toggle ────────────────────────────────────────────────────────────
+if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
+    end
+else
+    rm -f "$PIDFILE"
+    record
+fi
