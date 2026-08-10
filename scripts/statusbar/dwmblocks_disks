@@ -1,42 +1,92 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-# Array of disks and matching icons
-DISKS=("/" "/home")
-ICONS=("󰋊 " " ")
+# ── Config ────────────────────────────────────────────────────────────
+DISKS="/ /home"
+ICONS="󰋊 "
+STATE_FILE="/tmp/dwmblocks_disk_info"
 
-# Define a file to save current disk and format, and initialize if not found
-DISKS_FILE="/tmp/dwmblocks_disk_info"
-[ -f "$DISKS_FILE" ] || echo "0 0" > "$DISKS_FILE"
+# ── State init ────────────────────────────────────────────────────────
+[ -f "$STATE_FILE" ] || printf '0 0\n' > "$STATE_FILE"
+read -r INDEX FORMAT < "$STATE_FILE"
 
-# Read INDEX number and FORMAT number from the file
-read INDEX FORMAT < "$DISKS_FILE"
+# Sanitize state (default to 0 if corrupt)
+[ -z "$INDEX" ] && INDEX=0
+[ -z "$FORMAT" ] && FORMAT=0
 
-# Set the current disk and icon per INDEX #
-CURRENT_DISK="${DISKS[$INDEX]}"
-ICON="${ICONS[$INDEX]}"
+# Count disks
+set -- $DISKS
+DISK_COUNT=$#
 
-# Pull usage % and space remaining of that disk
-# Could add more display formats here
-PERCENT=$(df -h "$CURRENT_DISK" | awk 'NR==2 {print $5}')
-SPACE=$(df -h "$CURRENT_DISK" | awk 'NR==2 {print $4}')
-
-# If format is 0, display usage %, otherwise, space remaining
-# Could instead use a case statement if more formats are added
-[ "$FORMAT" -eq 0 ] && INFO="$PERCENT" || INFO="$SPACE"
-
-# If left-clicked, go to next disk
-# If right-clicked, go to previous disk
-# If middle-clicked, change format
-# Modulo used to wrap around when it reaches end of disks array or format #s
-case $BLOCK_BUTTON in
-		1) echo "$(( ($INDEX + 1) % ${#DISKS[@]} )) $FORMAT" > "$DISKS_FILE" ;;
-		3) echo "$(( ($INDEX - 1) % ${#DISKS[@]} )) $FORMAT" > "$DISKS_FILE" ;;
-		2) echo "$INDEX $(( ($FORMAT + 1) % 2 ))" > "$DISKS_FILE" ;;
-		6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+# ── Click handlers ────────────────────────────────────────────────────
+case "${BLOCK_BUTTON:-}" in
+    1|4) INDEX=$(( (INDEX + 1) % DISK_COUNT )) ;;
+    3|5) INDEX=$(( (INDEX - 1 + DISK_COUNT) % DISK_COUNT )) ;;
+    2)   FORMAT=$(( (FORMAT + 1) % 2 )) ;;
+    6)   setsid -f "${TERMINAL:-st}" -e "${EDITOR:-nvim}" "$0" >/dev/null 2>&1; exit 0 ;;
+    8)   setsid -f "${FILEMANAGER:-pcmanfm}" "$(echo "$DISKS" | cut -d' ' -f$((INDEX + 1)))" >/dev/null 2>&1; exit 0 ;;
 esac
 
-# Send to bar
-echo "$ICON$INFO"
+# Save updated state
+printf '%d %d\n' "$INDEX" "$FORMAT" > "$STATE_FILE"
 
-# Can set this script to refresh on a timer in dwmblocks blocks.h
-# If you want this to cycle through visible disks on that timer, remove the (INDEX + 1) out of the case BLOCK_BUTTON and add it to the end of the script instead
+# ── Select current disk ───────────────────────────────────────────────
+# Get the Nth disk from space-separated list
+disk=""
+i=0
+for d in $DISKS; do
+    [ "$i" -eq "$INDEX" ] && disk="$d" && break
+    i=$((i + 1))
+done
+
+# Get the Nth icon
+icon=""
+i=0
+for ic in $ICONS; do
+    [ "$i" -eq "$INDEX" ] && icon="$ic" && break
+    i=$((i + 1))
+done
+[ -z "$icon" ] && icon="󰋊"
+
+# ── Gather disk info (never fail) ─────────────────────────────────────
+percent="?"
+space="?"
+pnum=0
+
+if [ -n "$disk" ] && [ -d "$disk" ]; then
+    # Parse df output safely
+    df_line=$(df -h "$disk" 2>/dev/null | tail -n 1)
+    if [ -n "$df_line" ]; then
+        # df output: Filesystem Size Used Avail Use% Mounted on
+        # We want $5 (Use%) and $4 (Avail)
+        percent=$(echo "$df_line" | awk '{print $5}')
+        space=$(echo "$df_line" | awk '{print $4}')
+        # Strip % for numeric compare
+        pnum=$(echo "$percent" | tr -d '%' | tr -d ' ')
+        # Validate numeric
+        case "$pnum" in
+            ''|*[!0-9]*) pnum=0 ;;
+        esac
+    fi
+else
+    icon="󰋊"
+    disk="?"
+fi
+
+# ── Format selection ──────────────────────────────────────────────────
+case "$FORMAT" in
+    0) info="${percent}" ;;
+    1) info="${space}" ;;
+    *) info="${percent}" ;;
+esac
+
+# ── Bar output (ALWAYS prints something) ──────────────────────────────
+printf '%s%s\n' "$icon" "$info"
+
+# ── Right-click notification ──────────────────────────────────────────
+if [ "${BLOCK_BUTTON:-}" = "3" ]; then
+    if   [ "$pnum" -ge 90 ]; then color="#bf616a"
+    elif [ "$pnum" -ge 75 ]; then color="#ebcb8b"
+    else                          color="#a3be8c"
+    fi
+    notify-send -t 4000 -h "string:bgcolor:$color" "Disk ${disk}" "Used: ${percent}\nFree: ${space}\nMount: ${disk}"
+fi

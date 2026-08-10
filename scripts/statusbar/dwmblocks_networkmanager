@@ -1,22 +1,134 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-# A dwmblocks function to show the current network connection/SSID, private IP, and public IP using NetworkManager
-# GNU GPLv3
+# ── Config ────────────────────────────────────────────────────────────
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
+PUB_IP_CACHE="$CACHE_DIR/dwmblocks_public_ip"
+CACHE_MAX_AGE=300
 
-# Dependencies: NetworkManager, curl
+ICON_WIFI=""
+ICON_WIRED=""
+ICON_DISCONNECT=""
+ICON_VPN=""
+ICON_UNKNOWN=""
 
-# Get network information
-CONNAME=$(nmcli -a | grep 'Wired connection' | awk 'NR==1{print $1}' | tr ':' ' ')
-if [ "$CONNAME" = "" ]; then
-    CONNAME=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -c 5-)
+# ── Helpers ────────────────────────────────────────────────────────────
+get_active_iface() {
+    # Find first interface that is UP and not loopback/docker/virbr
+    ip -o link show 2>/dev/null | awk -F': ' '
+        $2 !~ /^(lo|docker|virbr|br-|veth|tun|wg)/ && $2 ~ /^[ew]/ {
+            # check if UP
+            cmd = "ip -o link show " $2 " 2>/dev/null"
+            while ((cmd | getline line) > 0) {
+                if (line ~ /state UP/) { print $2; exit }
+            }
+            close(cmd)
+        }
+    '
+}
+
+is_wireless() {
+    [[ -d "/sys/class/net/$1/wireless" ]] || [[ -d "/sys/class/net/$1/phy80211" ]]
+}
+
+get_ssid() {
+    local iface="$1"
+    # Try iw first (Arch standard)
+    if command -v iw >/dev/null 2>&1; then
+        iw dev "$iface" link 2>/dev/null | grep -o 'SSID: .*' | cut -d' ' -f2- && return
+    fi
+    # Fallback to wpa_cli
+    if command -v wpa_cli >/dev/null 2>&1; then
+        wpa_cli -i "$iface" status 2>/dev/null | grep '^ssid=' | cut -d= -f2 && return
+    fi
+    # Fallback to nmcli if available
+    if command -v nmcli >/dev/null 2>&1; then
+        nmcli -t -f active,ssid dev wifi 2>/dev/null | grep '^yes' | cut -d: -f2 && return
+    fi
+}
+
+get_private_ip() {
+    ip -o -4 addr show dev "$1" 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]+' | head -n1 | cut -d/ -f1
+}
+
+is_vpn_active() {
+    # Check for common VPN interface names or routes
+    ip -o link show 2>/dev/null | grep -qE 'tun|tap|wg|vpn' && return 0
+    ip route show table all 2>/dev/null | grep -q "dev tun" && return 0
+    [[ -n "${WG_ACTIVE:-}" ]] && return 0
+    return 1
+}
+
+get_public_ip() {
+    if [[ -f "$PUB_IP_CACHE" ]]; then
+        local age=$(( $(date +%s) - $(stat -c %Y "$PUB_IP_CACHE" 2>/dev/null || echo 0) ))
+        [[ $age -lt $CACHE_MAX_AGE ]] && { cat "$PUB_IP_CACHE" 2>/dev/null; return; }
+    fi
+    # Background refresh (non-blocking)
+    (
+        mkdir -p "$CACHE_DIR"
+        curl -s --max-time 2 https://ipinfo.io/ip 2>/dev/null > "$PUB_IP_CACHE.tmp" && \
+        mv "$PUB_IP_CACHE.tmp" "$PUB_IP_CACHE"
+    ) &
+    cat "$PUB_IP_CACHE" 2>/dev/null || true
+}
+
+# ── Main ──────────────────────────────────────────────────────────────
+iface=$(get_active_iface)
+
+if [[ -z "$iface" ]]; then
+    # No active interface found
+    if is_vpn_active; then
+        pub=$(get_public_ip)
+        [[ -n "$pub" ]] && echo "$ICON_VPN VPN $pub" || echo "$ICON_VPN VPN"
+    else
+        echo "$ICON_DISCONNECT Offline"
+    fi
+    exit 0
 fi
 
-PRIVATE=$(nmcli -a | grep 'inet4 192' | awk '{print $2}')
-PUBLIC=$(curl -s https://ipinfo.io/ip)
+priv=$(get_private_ip "$iface")
 
-# Determine output format based on identifier (if needed)
-if [ "$1" = "" ]; then
-    printf " %svia %s" "$CONNAME" "$PRIVATE"
+if is_wireless "$iface"; then
+    ssid=$(get_ssid "$iface")
+    if [[ -n "$ssid" ]]; then
+        conn="$ICON_WIFI $ssid"
+    else
+        conn="$ICON_WIFI $iface"
+    fi
+elif [[ "$iface" == eth* || "$iface" == en* ]]; then
+    conn="$ICON_WIRED $iface"
 else
-    printf " %svia %s" "$CONNAME" "$PRIVATE"
+    conn="$ICON_UNKNOWN $iface"
 fi
+
+# Add VPN indicator if active
+if is_vpn_active; then
+    conn="$ICON_VPN $conn"
+fi
+
+# Bar output
+if [[ -n "$priv" ]]; then
+    printf '%s %s\n' "$conn" "$priv"
+else
+    printf '%s\n' "$conn"
+fi
+
+# ── Click handlers ────────────────────────────────────────────────────
+case "${BLOCK_BUTTON:-}" in
+    1)
+        if command -v nmcli >/dev/null 2>&1 && command -v nmcli-connection-editor >/dev/null 2>&1; then
+            nmcli-connection-editor >/dev/null 2>&1
+        elif command -v nmtui >/dev/null 2>&1; then
+            setsid -f "${TERMINAL:-st}" -e nmtui >/dev/null 2>&1
+        else
+            setsid -f "${TERMINAL:-st}" -e sh -c "echo 'Interfaces:'; ip -br addr; read -n1" >/dev/null 2>&1
+        fi
+        ;;
+    3)
+        pub=$(get_public_ip)
+        notify-send -t 5000 "Network" "Interface: $iface\nPrivate: ${priv:-N/A}\nPublic: ${pub:-N/A}"
+        ;;
+    6)
+        setsid -f "${TERMINAL:-st}" -e "${EDITOR:-nvim}" "$0" >/dev/null 2>&1
+        ;;
+esac
