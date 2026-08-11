@@ -1,89 +1,66 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
 
-# ── Config ────────────────────────────────────────────────────────────
-ICON_UP="${ICON_UP:-}"
-ICON_DOWN="${ICON_DOWN:-}"
-ICON_CONNECTING="${ICON_CONNECTING:-}"
+TARGET_FILE="${TARGET_FILE:-$HOME/.target}"
+ICON_VPN=""
+ICON_OFFLINE=""
 
-# ── Helpers ───────────────────────────────────────────────────────────
-list_interfaces() {
-    ip -o link show 2>/dev/null | awk -F': ' '{n=$2; gsub(/@.*/, "", n); print n}'
-}
+# ── Get tun0 IP ───────────────────────────────────────────────────────
+vpn_ip=$(ip -o -4 addr show tun0 2>/dev/null | awk '{split($4,a,"/"); print a[1]}')
 
-is_vpn() {
-    case "$1" in
-        tun*|tap*|wg*|ppp*|vpn*|cscotun*|tailscale*|zt*|nordvpn*|proton*)
-            return 0 ;;
-        *) return 1 ;;
-    esac
-}
-
-is_up() {
-    local flags
-    flags=$(ip -o link show dev "$1" 2>/dev/null | awk '{print $3}')
-    [[ "$flags" == *"UP"* ]]
-}
-
-get_ips() {
-    # IPv4 only; change to '/inet[6]? /' to include IPv6
-    ip -o addr show dev "$1" 2>/dev/null | awk '/ inet / {print $4}' | tr '\n' ',' | sed 's/,$//'
-}
-
-get_gateway() {
-    ip -o route show default dev "$1" 2>/dev/null | awk '{print $3}' | head -n1
-}
-
-get_wg_endpoint() {
-    command -v wg >/dev/null 2>&1 || return
-    wg show "$1" endpoints 2>/dev/null | awk 'NR==1 {print $2}'
-}
-
-# ── Main ──────────────────────────────────────────────────────────────
-get_vpn_details() {
-    local iface ips gw endpoint
-    local primary="" count=0
-
-    while IFS= read -r iface; do
-        [[ -n "$iface" ]] || continue
-        is_vpn "$iface" || continue
-        is_up "$iface" || continue
-
-        ((count++))
-
-        # Only build detail string for the first active VPN
-        if [[ -z "$primary" ]]; then
-            ips=$(get_ips "$iface")
-            gw=$(get_gateway "$iface")
-
-            local info="$iface"
-            [[ -n "$ips" ]] && info+=" $ips"
-            [[ -n "$gw" ]] && info+=" via $gw"
-
-            # WireGuard: show endpoint if no gateway
-            if [[ -z "$gw" && "$iface" == wg* ]]; then
-                endpoint=$(get_wg_endpoint "$iface")
-                [[ -n "$endpoint" ]] && info+=" → $endpoint"
-            fi
-
-            primary="$info"
-        fi
-    done < <(list_interfaces)
-
-    if ((count == 0)); then
-        if pgrep -x openvpn >/dev/null 2>&1 || pgrep -x openconnect >/dev/null 2>&1; then
-            echo "$ICON_CONNECTING Connecting..."
+# ── Commands: set / clear target ──────────────────────────────────────
+case "${1:-}" in
+    set)
+        if [ -n "${2:-}" ]; then
+            printf '%s\n' "$2" > "$TARGET_FILE"
         else
-            echo "$ICON_DOWN Disconnected"
+            _t=$(dmenu -p 'Target:' < /dev/null) || exit 0
+            [ -n "$_t" ] && printf '%s\n' "$_t" > "$TARGET_FILE"
         fi
-        return 1
-    fi
+        pkill -RTMIN+7 dwmblocks 2>/dev/null
+        exit 0
+        ;;
+    clear)
+        rm -f "$TARGET_FILE"
+        pkill -RTMIN+7 dwmblocks 2>/dev/null
+        exit 0
+        ;;
+esac
 
-    if ((count == 1)); then
-        echo "$ICON_UP $primary"
-    else
-        echo "$ICON_UP $primary (+$((count - 1)))"
-    fi
-}
+# ── Main bar output ───────────────────────────────────────────────────
+if [ -n "$vpn_ip" ]; then
+    printf '%s %s\n' "$ICON_VPN" "$vpn_ip"
+else
+    printf '%s Offline\n' "$ICON_OFFLINE"
+fi
 
-get_vpn_details
+# ── Click handlers ────────────────────────────────────────────────────
+case "${BLOCK_BUTTON:-}" in
+    1)
+        # Left click: info terminal
+        setsid -f "${TERMINAL:-st}" -e sh -c "
+            echo '=== tun0 ==='
+            ip addr show tun0 2>/dev/null || echo 'No tun0'
+            echo
+            echo '=== Target ==='
+            cat '$TARGET_FILE' 2>/dev/null || echo 'None'
+            echo
+            echo 'Press any key...'
+            read -n1
+        " >/dev/null 2>&1
+        ;;
+    2)
+        # Middle click: set target via dmenu
+        _t=$(dmenu -p 'Set target:' < /dev/null) || exit 0
+        [ -n "$_t" ] && printf '%s\n' "$_t" > "$TARGET_FILE"
+        pkill -RTMIN+7 dwmblocks 2>/dev/null
+        ;;
+    3)
+        # Right click: notification
+        target=$(cat "$TARGET_FILE" 2>/dev/null)
+        notify-send -t 4000 "VPN & Target" "VPN: ${vpn_ip:-Offline}\nTarget: ${target:-None}"
+        ;;
+    6)
+        # Shift + left click: edit script
+        setsid -f "${TERMINAL:-st}" -e "${EDITOR:-nvim}" "$0" >/dev/null 2>&1
+        ;;
+esac

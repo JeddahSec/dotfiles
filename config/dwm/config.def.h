@@ -143,9 +143,9 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "kitty", NULL };
 static const char *targetsetcmd[] = { "dwmblocks-target", "set", NULL };
 static const char *targetclearcmd[] = { "dwmblocks-target", "clear", NULL };
-static const char *vpnupcmd[]   = { "st", "-e", "sudo", "systemctl", "start", "openvpn-client@htb", NULL };
-static const char *vpndowncmd[] = { "sudo", "systemctl", "stop", "openvpn-client@htb", NULL };
 static const char *recordcmd[] = { "dwm-record", NULL };
+static const char *vpnupcmd[]   = { "dwm-vpn", "up", NULL };
+static const char *vpndowncmd[] = { "dwm-vpn", "down", NULL };
 
 static const Arg tagexec[] = { /* spawn application when tag is middle-clicked */
 	{ .v = termcmd }, /* 1 */
@@ -298,8 +298,8 @@ static const Key keys[] = {
     { MODKEY, XK_t, spawn, {.v = targetsetcmd } },      // Super+T → set target via dmenu
     { MODKEY|ShiftMask, XK_t, spawn, {.v = targetclearcmd } }, // Super+Shift+T → clear
 
-    { MODKEY, XK_v, spawn, {.v = vpnupcmd } },
-    { MODKEY|ShiftMask, XK_v, spawn, {.v = vpndowncmd } },
+    { MODKEY,           XK_v, spawn, {.v = vpnupcmd } },      /* Super + v → connect */
+    { MODKEY|ShiftMask, XK_v, spawn, {.v = vpndowncmd } },    /* Super + Shift + v → disconnect */
     /* ... */
     { 0, XK_Print, spawn, {.v = recordcmd } },           // PrtSc alone → toggle record
     /* ... */
