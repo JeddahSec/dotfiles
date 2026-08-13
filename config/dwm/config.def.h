@@ -144,8 +144,8 @@ static const char *termcmd[]  = { "kitty", NULL };
 static const char *targetsetcmd[] = { "dwmblocks-target", "set", NULL };
 static const char *targetclearcmd[] = { "dwmblocks-target", "clear", NULL };
 static const char *recordcmd[] = { "dwm-record", NULL };
-static const char *vpnupcmd[]   = { "dwm-vpn", "up", NULL };
-static const char *vpndowncmd[] = { "dwm-vpn", "down", NULL };
+static const char *vpnupcmd[]   = { "st", "-e", "sudo", "systemctl", "start", "openvpn-client@htb", NULL };
+static const char *vpndowncmd[] = { "st", "-e", "sudo", "systemctl", "stop", "openvpn-client@htb", NULL };
 
 static const Arg tagexec[] = { /* spawn application when tag is middle-clicked */
 	{ .v = termcmd }, /* 1 */
