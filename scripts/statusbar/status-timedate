@@ -1,7 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Get the current date and time in the desired format
-formatted_datetime=$(date "+%A, %-d %B, %Y %I:%M%p ")
+# ── Config (override via environment) ─────────────────────────────────
+ICON="${DATETIME_ICON:-}"          # Nerd Font clock, or use "🕐"
+FORMAT="${DATETIME_FORMAT:-%A, %-d %B %Y %I:%M %p}"
+# Alternative compact format: "%a %d %b %H:%M"
+# Alternative 24h format:    "%A, %-d %B %Y %H:%M"
 
-# Display the formatted date and time
-echo "$formatted_datetime"
+# Force English day/month names regardless of system locale
+# Comment out if you prefer your native locale
+export LC_TIME=en_US.UTF-8
+
+# ── Output ────────────────────────────────────────────────────────────
+printf '%s %s\n' "$ICON" "$(date "+$FORMAT")"
