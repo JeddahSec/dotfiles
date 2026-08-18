@@ -80,7 +80,7 @@ case "$FORMAT" in
 esac
 
 # ── Bar output (ALWAYS prints something) ──────────────────────────────
-printf '%s%s\n' "$icon" "$info"
+printf '%s %s\n' "$icon" "$info"
 
 # ── Right-click notification ──────────────────────────────────────────
 if [ "${BLOCK_BUTTON:-}" = "3" ]; then

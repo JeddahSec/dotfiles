@@ -97,6 +97,7 @@ auto_mode() {
 show_menu() {
     local current_temp
     current_temp=$(get_current_temp)
+    
     # Menu options
     local options=()
     options+=("Auto - Time-based temperature")

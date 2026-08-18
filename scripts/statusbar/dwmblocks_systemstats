@@ -1,78 +1,119 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-# Sensor info
-echo "Available sensors:" > /tmp/dwmblocks_debug.log
-sensors >> /tmp/dwmblocks_debug.log
-echo "---" >> /tmp/dwmblocks_debug.log
+# ── Icons ─────────────────────────────────────────────────────────────
+ICON_CPU="󰍛"
+ICON_CPU_HOT=""
+ICON_GPU="󰢮"
+ICON_GPU_HOT=""
+ICON_MEM=""
 
+# ── Helpers ───────────────────────────────────────────────────────────
+get_cpu_temp() {
+    local temp
+    # Try known CPU labels first
+    temp=$(sensors 2>/dev/null | grep -m1 -E 'Tdie|Tctl|Package id 0|Core 0' \
+        | grep -oE '[+-]?[0-9]+(\.[0-9]+)?°C' | head -n1 | tr -d '+°C' | cut -d. -f1)
 
-CPU_TEMP=$(sensors | awk '
-    /^Tdie|^Package id|^Core 0|^CPU|^temp1/ {
-        gsub(/[+°C]/, "");
-        for (i=1; i<=NF; i++) {
-            if ($i ~ /^[0-9]+(\.[0-9]+)?$/) {
-		gsub(/\..*/, "", $i);
-                print $i;
-                exit;
-            }
-        }
-    }')
+    # Fallback: highest reasonable temp from any sensor
+    if [[ -z "$temp" ]]; then
+        temp=$(sensors 2>/dev/null | grep -oE '[+-]?[0-9]+(\.[0-9]+)?°C' \
+            | sed 's/[+°C]//g' | awk '$1 > 20 && $1 < 120 {print int($1)}' \
+            | sort -rn | head -n1)
+    fi
+    printf '%s' "${temp:-N/A}"
+}
 
-# Debug CPU temperature detection, if not found, return N/A
-if [ -z "$CPU_TEMP" ]; then
-    # Try simpler pattern as fallback
-    CPU_TEMP=$(sensors | grep -E '^(Core 0|Package id 0|CPU)' | awk '{print $3}' | tr -d '+°C' | head -n1)
+get_gpu_temp() {
+    local temp
+    # NVIDIA
+    if command -v nvidia-smi >/dev/null 2>&1; then
+        temp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader 2>/dev/null | tr -d '[:space:]')
+        [[ -n "$temp" && "$temp" =~ ^[0-9]+$ ]] && { printf '%s' "$temp"; return; }
+    fi
+    # AMD (edge = GPU die temp)
+    temp=$(sensors 2>/dev/null | grep -m1 '^edge' \
+        | grep -oE '[+-]?[0-9]+(\.[0-9]+)?°C' | head -n1 | tr -d '+°C' | cut -d. -f1)
+    [[ -n "$temp" ]] && { printf '%s' "$temp"; return; }
+
+    # Intel via sysfs
+    for f in /sys/class/drm/card*/device/hwmon/hwmon*/temp1_input; do
+        [[ -r "$f" ]] || continue
+        temp=$(cat "$f" 2>/dev/null)
+        [[ -n "$temp" && "$temp" =~ ^[0-9]+$ ]] && { printf '%.0f\n' "$((temp / 1000))"; return; }
+    done
+    printf 'N/A'
+}
+
+get_fan_speed() {
+    local rpm
+    rpm=$(sensors 2>/dev/null | grep -m1 -i 'fan' | grep -oE '[0-9]+' | head -n1)
+    [[ -n "$rpm" && "$rpm" != "0" ]] && printf '%s RPM' "$rpm" || printf 'N/A'
+}
+
+get_mem() {
+    free -m | awk '/^Mem/ {printf "%.1fG", $3/1024}'
+}
+
+get_cpu_usage() {
+    local u1 n1 s1 i1 u2 n2 s2 i2
+    read -r u1 n1 s1 i1 <<< "$(awk '/^cpu /{print $2,$3,$4,$5}' /proc/stat)"
+    sleep 0.5
+    read -r u2 n2 s2 i2 <<< "$(awk '/^cpu /{print $2,$3,$4,$5}' /proc/stat)"
+
+    local used1=$((u1 + n1 + s1))  used2=$((u2 + n2 + s2))
+    local total1=$((used1 + i1))    total2=$((used2 + i2))
+    local diff=$((total2 - total1))
+
+    [[ $diff -le 0 ]] && { echo "0"; return; }
+    echo "$(( (used2 - used1) * 100 / diff ))"
+}
+
+# ── Gather data ───────────────────────────────────────────────────────
+CPU_TEMP=$(get_cpu_temp)
+GPU_TEMP=$(get_gpu_temp)
+MEM_USE=$(get_mem)
+FAN_SPEED=$(get_fan_speed)
+
+# ── Styling ───────────────────────────────────────────────────────────
+CPU_ICON="$ICON_CPU"
+CPU_COLOR="#a3be8c"
+
+if [[ "$CPU_TEMP" == "N/A" ]]; then
+    CPU_COLOR="#d8dee9"
+elif (( CPU_TEMP >= 76 )); then
+    CPU_COLOR="#bf616a"
+    CPU_ICON="$ICON_CPU_HOT"
+elif (( CPU_TEMP >= 66 )); then
+    CPU_COLOR="#ebcb8b"
 fi
 
-[ -z "$CPU_TEMP" ] && CPU_TEMP="N/A"
-echo "CPU_TEMP=$CPU_TEMP" >> /tmp/dwmblocks_debug.log
-
-
-# Try different GPU temperature sensors (AMD and NVIDIA), if not found, return N/A
-if command -v nvidia-smi >/dev/null 2>&1; then
-    # NVIDIA GPU
-    GPU_TEMP=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader)
-else
-    # AMD GPU
-    GPU_TEMP=$(sensors | awk '/^edge|^junction/ {gsub(/\+/,""); gsub(/\..*/,"",$2); print $2}')
+GPU_ICON="$ICON_GPU"
+if [[ "$GPU_TEMP" == "N/A" ]]; then
+    GPU_ICON="󰢮 ?"
+elif (( GPU_TEMP >= 72 )); then
+    GPU_ICON="$ICON_GPU_HOT"
 fi
 
-[ -z "$GPU_TEMP" ] && GPU_TEMP="N/A"
+# ── Bar output (must be first stdout for dwmblocks) ───────────────────
+printf ' %s %s°C  %s %s°C  %s %s \n' \
+    "$GPU_ICON" "$GPU_TEMP" "$CPU_ICON" "$CPU_TEMP" "$ICON_MEM" "$MEM_USE"
 
-
-# Try different fan sensors
-FAN_SPEED=$(sensors | awk '/^fan|^cpu_fan/ {print $2" "$3}')
-[ -z "$FAN_SPEED" ] && FAN_SPEED="N/A"
-
-
-# Memory and CPU usage
-MEM_USE=$(free -m | awk '/^Mem/ {printf "%.1f", ($3)/1024}')
-CPU_USE=$(iostat -c | awk '/avg-cpu:/{getline; print "User CPU: "$1"%\n\nSystem CPU: "$3"%"}')
-
-
-# Show warning icon if CPU or GPU temp are high
-case $CPU_TEMP in
-    "N/A") COLOR="#d8dee9" && CPU_ICON="󰍛 ?" ;;
-    [7-9][6-9]|[8-9][0-9]|100) COLOR="#bf616a" && CPU_ICON="" ;;  # Greater than 75
-    [6][6-9]|7[0-5]) COLOR="#ebcb8b" && CPU_ICON="󰍛" ;;            # Between 66 and 75
-    *) COLOR="#a3be8c" && CPU_ICON="󰍛" ;;                          # 65 or below
-esac
-
-case $GPU_TEMP in
-    "N/A") GPU_ICON="󰢮 ?" ;;
-    [7-9][1-9]|[8-9][0-9]|100) GPU_ICON="" ;;  # Greater than 71
-    [5][1-9]|70) GPU_ICON="󰢮" ;;                # Between 51 and 70
-    *) GPU_ICON="󰢮" ;;                          # 50 or below
-esac
-
-
-# Send to bar
-echo " $GPU_ICON $GPU_TEMP°C  $CPU_ICON $CPU_TEMP°C   ${MEM_USE}g " | tail -n 1
-
-
-# Clicking on bar
-case $BLOCK_BUTTON in
-		1) setsid -w -f "$TERMINAL" -e htop ;;
-		3) notify-send -t 10000 -h string:bgcolor:$COLOR Stats "$CPU_USE\n\nGPU: $GPU_TEMP°C\n\nFan Speed: $FAN_SPEED" ;;
-		6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+# ── Click handlers ────────────────────────────────────────────────────
+case "${BLOCK_BUTTON:-}" in
+    1)
+        setsid -f "${TERMINAL:-st}" -e htop >/dev/null 2>&1
+        ;;
+    3)
+        CPU_USE=$(get_cpu_usage)
+        notify-send -t 8000 -h "string:bgcolor:$CPU_COLOR" "System Stats" \
+"CPU Load: ${CPU_USE}%
+CPU Temp: ${CPU_TEMP}°C
+GPU Temp: ${GPU_TEMP}°C
+Memory:   ${MEM_USE}
+Fan:      ${FAN_SPEED}"
+        ;;
+    6)
+        setsid -f "${TERMINAL:-st}" -e "${EDITOR:-nvim}" "$0" >/dev/null 2>&1
+        ;;
 esac

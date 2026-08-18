@@ -13,7 +13,7 @@
 				<key>background</key>
 				<string>#282c34</string>
 				<key>foreground</key>
-				<string>#f8f8f2</string>
+				<string>#a7a7a8</string>
 				<key>caret</key>
 				<string>#61dafb</string>
 				<key>lineHighlight</key>
@@ -151,7 +151,7 @@
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
-				<string>#d7deea</string>
+				<string>#a7a7a8</string>
 			</dict>
 		</dict>
 

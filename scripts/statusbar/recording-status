@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Check if the recording process PID file exists and is active
+if [ -f /tmp/recpid ] && kill -0 "$(cat /tmp/recpid)" 2>/dev/null; then
+    if [ -f /tmp/recstart ]; then
+        # Calculate elapsed time
+        start=$(cat /tmp/recstart)
+        now=$(date +%s)
+        elapsed=$((now - start))
+        mins=$((elapsed / 60))
+        secs=$((elapsed % 60))
+        printf " %02d:%02d" $mins $secs
+    else
+        echo " REC"
+    fi
+else
+    # Cleanup if not recording
+    [ -f /tmp/recpid ] && rm -f /tmp/recpid
+    [ -f /tmp/recstart ] && rm -f /tmp/recstart
+    echo " READY"
+fi
+
+# Optional: To track the start time when recording begins
+# This would need to be placed in the recording script at the start of the recording process.
+# echo $(date +%s) > /tmp/recstart
+

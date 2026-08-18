@@ -102,9 +102,9 @@ else
 fi
 
 # Add VPN indicator if active
-if is_vpn_active; then
-    conn="$ICON_VPN $conn"
-fi
+# if is_vpn_active; then
+#     conn="$ICON_VPN $conn"
+# fi
 
 # Bar output
 if [[ -n "$priv" ]]; then

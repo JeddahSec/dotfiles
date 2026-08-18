@@ -4,9 +4,9 @@ return {
   config = function()
     local rainbow_delimiters = require("rainbow-delimiters")
 
-    vim.api.nvim_set_hl(0, "RainbowDelimiterVsYellow", { fg = "#179fff" })
-    vim.api.nvim_set_hl(0, "RainbowDelimiterVsMagenta", { fg = "#ffd700" })
-    vim.api.nvim_set_hl(0, "RainbowDelimiterVsCyan", { fg = "#da70d6" })
+    vim.api.nvim_set_hl(0, "RainbowDelimiterVsYellow", { fg = "#ffd700" })
+    vim.api.nvim_set_hl(0, "RainbowDelimiterVsMagenta", { fg = "#da70d6" })
+    vim.api.nvim_set_hl(0, "RainbowDelimiterVsCyan", { fg = "#179fff" })
 
     vim.g.rainbow_delimiters = {
       strategy = {
