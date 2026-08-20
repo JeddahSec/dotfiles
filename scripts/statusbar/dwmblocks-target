@@ -3,16 +3,20 @@
 # Usage: dwmblocks-target          # output for DWM bar
 #        dwmblocks-target set IP  # set target via dmenu or args
 #        dwmblocks-target clear   # clear target
-
 set -euo pipefail
 
 TARGET_FILE="${TARGET_FILE:-$HOME/.target}"
 
+# ── Dmenu appearance ──────────────────────────────────────────────────
+# Change the font name/size here to whatever is installed on your system.
+# Check available fonts with: fc-list | grep -i "font name"
+DMENU_FONT="${DMENU_FONT:-JetBrainsMono Nerd Font-20}"
+
 # ── Icons (Nerd Font or FontAwesome) ──────────────────────────────────
-ICON_NONE=""
-ICON_IP=""
-ICON_HOST=""
-ICON_INVALID=""
+ICON_NONE=""
+ICON_IP=""
+ICON_HOST=""
+ICON_INVALID=""
 
 # ── Validation ────────────────────────────────────────────────────────
 is_ipv4() {
@@ -82,7 +86,7 @@ case "${1:-}" in
         if [[ -n "${2:-}" ]]; then
             printf '%s\n' "$2" > "$TARGET_FILE"
         else
-            target="$(dmenu -p 'Set target:' < /dev/null)" || exit 0
+            target="$(dmenu -fn "$DMENU_FONT" -p 'Set target:' < /dev/null)" || exit 0
             [[ -n "$target" ]] && printf '%s\n' "$target" > "$TARGET_FILE"
         fi
         pkill -RTMIN+16 dwmblocks 2>/dev/null || true

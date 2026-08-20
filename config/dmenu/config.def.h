@@ -7,7 +7,7 @@ static int min_widith = 500;
 static const float menu_height_ratio = 4.0f;
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
-	"monospace:size=10",
+	"JetBrainsMono Nerd Font:size=20",
 	"NotoColorEmoji:pixelsize=8:antialias=true:autohint=true"
 };
 
@@ -15,7 +15,7 @@ static const unsigned int bgalpha = 0xe0;     /* Amount of opacity. 0xff is opaq
 static const unsigned int fgalpha = OPAQUE;
 static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
 static const char *colors[SchemeLast][2] = {
-	/*     fg         bg       */
+// 	/*     fg         bg       */
 	[SchemeNorm] = { "#bbbbbb", "#222222" },
 	[SchemeSel] = { "#eeeeee", "#83a598" },
 	[SchemeOut] = { "#000000", "#00ffff" },

@@ -52,9 +52,9 @@ static const char *downvol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "
 static const char *mute[]    = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
 /* END */
 
-static char dmenufont[]             = "monospace:size=18";
+static char dmenufont[]             = "JetBrainsMono Nerd Font:size=20";
 /*static const char *fonts[]          = { "Hack Nerd Font Mono:size=18", "NotoColorEmoji:pixelsize=22:antialias=true:autohint=true"  };*/
-static const char *fonts[]          = { "JetBrainsMono NF:size=18", "NotoColorEmoji:pixelsize=22:antialias=true:autohint=true"  };
+static const char *fonts[]          = { "JetBrainsMono NF:size=20", "NotoColorEmoji:pixelsize=22:antialias=true:autohint=true"  };
 
 /* default colors used if xrdb is not loaded */
 static char normbgcolor[]           = "#282c34";
