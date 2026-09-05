@@ -5,11 +5,11 @@ return {
     'neovim-treesitter/treesitter-parser-registry',
   },
   lazy = false,
-  build = ':TSUpdate',
+  build = ':tsupdate',
   config = function()
     local ts = require('nvim-treesitter')
 
-    -- Languages we want installed/updated locally for highlighting + queries.
+    -- languages we want installed/updated locally for highlighting + queries.
     local languages = {
       'arduino',
       'bash',
@@ -18,6 +18,7 @@ return {
       'css',
       'diff',
       'dockerfile',
+      'ecma',
       'git_config',
       'git_rebase',
       'gitattributes',
@@ -30,6 +31,7 @@ return {
       'ini',
       'javascript',
       'json',
+      'jsx',
       'lua',
       'make',
       'markdown',
@@ -45,26 +47,27 @@ return {
       'sql',
       'svelte',
       'typescript',
+      'tsx',
       'vim',
       'vue',
       'xml',
       'yaml',
     }
 
-    -- Treat Laravel Blade templates as `blade` instead of plain php.
+    -- treat laravel blade templates as `blade` instead of plain php.
     vim.filetype.add({
       pattern = {
         ['.*%.blade%.php'] = 'blade',
       },
     })
 
-    -- Build a quick lookup of already-installed parsers.
+    -- build a quick lookup of already-installed parsers.
     local installed = {}
     for _, lang in ipairs(ts.get_installed()) do
       installed[lang] = true
     end
 
-    -- Install only missing languages to keep startup work minimal.
+    -- install only missing languages to keep startup work minimal.
     local missing = {}
     for _, lang in ipairs(languages) do
       if not installed[lang] then
@@ -72,14 +75,14 @@ return {
       end
     end
 
-    -- Trigger async installs (with summary logs) when something is missing.
+    -- trigger async installs (with summary logs) when something is missing.
     if #missing > 0 then
       ts.install(missing, { summary = true })
     end
 
-    -- Enable Treesitter highlighting per-filetype buffer as files open.
-    -- Also opt into Treesitter indentation everywhere except yaml.
-    vim.api.nvim_create_autocmd('FileType', {
+    -- enable treesitter highlighting per-filetype buffer as files open.
+    -- also opt into treesitter indentation everywhere except yaml.
+    vim.api.nvim_create_autocmd('filetype', {
       callback = function(args)
         pcall(vim.treesitter.start, args.buf)
 
