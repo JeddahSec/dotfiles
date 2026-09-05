@@ -12,7 +12,6 @@
     "window.customMenuBarAltFocus": false,
     "window.enableMenuBarMnemonics": false,
     "security.workspace.trust.untrustedFiles": "open",
-
     /* ======================
        Editor Behavior
     ====================== */
@@ -49,7 +48,6 @@
     "editor.guides.indentation": false,
     "editor.minimap.enabled": false,
     "editor.minimap.maxColumn": 250,
-
     /* ======================
        Editor Appearance / Typography
     ====================== */
@@ -58,6 +56,7 @@
     "editor.fontWeight": "400",
     "editor.fontLigatures": "'ss01', 'ss02', 'ss03', 'ss04', 'ss05', 'ss06', 'ss07', 'ss08', 'calt', 'dlig'",
     "editor.lineHeight": 55,
+    "editor.lineNumbers": "relative",
     "editor.suggestFontSize": 20,
     "editor.suggestLineHeight": 30,
     "editor.cursorBlinking": "solid",
@@ -86,7 +85,6 @@
             },
         ],
     },
-
     /* ======================
        Files
     ====================== */
@@ -98,7 +96,6 @@
         ".php_cs": "php",
         ".php_cs.dist": "php",
     },
-
     /* ======================
        Search
     ====================== */
@@ -116,7 +113,6 @@
         "storage": true,
         ".phpunit.result.cache": true,
     },
-
     /* ======================
        Diff / SCM / Git
     ====================== */
@@ -125,7 +121,6 @@
     "scm.diffDecorations": "none",
     "git.decorations.enabled": false,
     "problems.decorations.enabled": false,
-
     /* ======================
        Formatters (Prettier / language-specific)
     ====================== */
@@ -184,7 +179,6 @@
     "python.createEnvironment.trigger": "off",
     "php.suggest.basic": false,
     "vetur.format.options.tabSize": 4,
-
     /* ======================
        Language Tooling (Emmet / Tailwind)
     ====================== */
@@ -199,7 +193,6 @@
         "plaintext": "html",
     },
     "tailwindCSS.experimental.configFile": null,
-
     /* ======================
        Explorer
     ====================== */
@@ -208,7 +201,6 @@
     "explorer.confirmDelete": false,
     "explorer.decorations.badges": false,
     "explorer.sortOrder": "type",
-
     /* ======================
        Workbench / UI Chrome
     ====================== */
@@ -238,14 +230,12 @@
     "material-icon-theme.hidesExplorerArrows": true,
     "material-icon-theme.files.color": "#42a5f5",
     "notebook.output.wordWrap": true,
-
     /* ======================
        Terminal
     ====================== */
     "terminal.integrated.lineHeight": 1,
     "terminal.integrated.fontSize": 20,
     "terminal.integrated.smoothScrolling": true,
-
     /* ======================
        CodeSnap
     ====================== */
@@ -254,7 +244,6 @@
     "codesnap.backgroundColor": "#FFC540",
     "codesnap.showLineNumbers": true,
     "codesnap.roundedCorners": true,
-
     /* ======================
        Extensions Misc
     ====================== */
@@ -262,7 +251,6 @@
         "asvetliakov.vscode-neovim": 1,
     },
     "glassit.alpha": 220,
-
     /* ======================
        Custom CSS & JS Loader
     ====================== */
@@ -270,4 +258,6 @@
         "file:///home/js/.config/Code/custom-vscode.css",
         "file:///home/js/.config/Code/vscode-script.js",
     ],
+    "git.openRepositoryInParentFolders": "always",
+    "liveServer.settings.donotShowInfoMsg": true,
 }

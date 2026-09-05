@@ -41,7 +41,7 @@ local p = {
   teal          = "#88c6be", -- punctuation
   fog           = "#d7deea", -- operators
   orange        = "#ff8b50", -- booleans
-  entity        = "#d67c9b", -- entities / exceptions
+  entity        = "#c5a5c5", -- entities / exceptions
 
   react_blue    = "#61dafb", -- breadcrumb / progress bar accent
 
