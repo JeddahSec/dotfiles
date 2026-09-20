@@ -4,7 +4,7 @@
 # and treat unset variables as an error.
 set -euo pipefail
 
-# 1. Fix the syntax bug to get the absolute path of this script's directory
+# 1. Get the absolute path of this script's directory
 DOTFILES=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # Helper function to safely symlink files/folders with backups
@@ -28,40 +28,37 @@ link_file() {
     ln -s "$src" "$dest"
 }
 
-# --- Symlink Core Configurations ---
+# --- Make sure target directories exist ---
+mkdir -p "$HOME/.config"
+mkdir -p "$HOME/.local/ser"
 
-# Terminal & Multiplexer
+# --- Terminal & Multiplexer ---
 link_file "$DOTFILES/kitty" "$HOME/.config/kitty"
 link_file "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
-link_file "$DOTFILES/scripts/t" "$HOME/.local/bin/t"
 
-# Editor
+# --- Editor ---
 link_file "$DOTFILES/nvim" "$HOME/.config/nvim"
 
-# --- Symlink Core Configurations ---
-
-# Terminal & Multiplexer
-link_file "$DOTFILES/kitty" "$HOME/.config/kitty"
-link_file "$DOTFILES/tmux/tmux.conf" "$HOME/.tmux.conf"
-link_file "$DOTFILES/scripts/t" "$HOME/.local/bin/t"
-
-# Editor
-link_file "$DOTFILES/nvim" "$HOME/.config/nvim"
-
-# Other Window Manager Configs & Rice
-link_file "$DOTFILES/config/rofi" "$HOME/.config/rofi"
+# --- Configs linked into ~/.config ---
+link_file "$DOTFILES/config/dwm" "$HOME/.config/dwm"
+link_file "$DOTFILES/config/bat" "$HOME/.config/bat"
 link_file "$DOTFILES/config/picom" "$HOME/.config/picom"
+link_file "$DOTFILES/config/rofi" "$HOME/.config/rofi"
 link_file "$DOTFILES/config/qutebrowser" "$HOME/.config/qutebrowser"
 
-# --- Target Group of Links ---
-link_file "$DOTFILES/config/dwm" "$HOME/.config/dwm"
-link_file "$DOTFILES/config/dmenu" "$HOME/.local/bin/dmenu"
-link_file "$DOTFILES/config/dunst" "$HOME/.config/dunst"
-link_file "$DOTFILES/config/dwmblocks" "$HOME/.local/bin/dwmblocks"
-link_file "$DOTFILES/scripts/statusbar" "$HOME/.local/bin/statusbar"
+# --- Configs linked into ~/.local/ser ---
+link_file "$DOTFILES/config/dwmblocks" "$HOME/.local/ser/dwmblocks"
+link_file "$DOTFILES/config/dunst" "$HOME/.local/ser/dunst"
+link_file "$DOTFILES/config/dmenu" "$HOME/.local/ser/dmenu"
 
-# Link .xinitrc
+# --- Scripts linked into ~/.local/ser ---
+link_file "$DOTFILES/scripts/statusbar" "$HOME/.local/ser/statusbar"
+link_file "$DOTFILES/scripts/t" "$HOME/.local/ser/t"
+
+# --- zshrc folder files linked into home directory with dot prefix ---
 link_file "$DOTFILES/zshrc/xinitrc" "$HOME/.xinitrc"
+link_file "$DOTFILES/zshrc/xprofile" "$HOME/.xprofile"
+link_file "$DOTFILES/zshrc/zshrc" "$HOME/.zshrc"
 
 # --- System Updates, Dependencies, & Compilation ---
 echo "🔄 Updating package databases..."
@@ -78,8 +75,8 @@ if [ -d "$HOME/.config/dwm" ]; then
 fi
 
 echo "🛠️  Compiling dmenu..."
-if [ -d "$HOME/.local/bin/dmenu" ]; then
-    cd "$HOME/.local/bin/dmenu"
+if [ -d "$HOME/.local/ser/dmenu" ]; then
+    cd "$HOME/.local/ser/dmenu"
     sudo make clean install
 fi
 
