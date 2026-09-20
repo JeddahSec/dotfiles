@@ -47,13 +47,13 @@ link_file "$DOTFILES/config/rofi" "$HOME/.config/rofi"
 link_file "$DOTFILES/config/qutebrowser" "$HOME/.config/qutebrowser"
 
 # --- Configs linked into ~/.local/ser ---
-link_file "$DOTFILES/config/dwmblocks" "$HOME/.local/ser/dwmblocks"
-link_file "$DOTFILES/config/dunst" "$HOME/.local/ser/dunst"
-link_file "$DOTFILES/config/dmenu" "$HOME/.local/ser/dmenu"
+link_file "$DOTFILES/config/dwmblocks" "$HOME/.local/src/dwmblocks"
+link_file "$DOTFILES/config/dunst" "$HOME/.local/src/dunst"
+link_file "$DOTFILES/config/dmenu" "$HOME/.local/src/dmenu"
 
 # --- Scripts linked into ~/.local/ser ---
-link_file "$DOTFILES/scripts/statusbar" "$HOME/.local/ser/statusbar"
-link_file "$DOTFILES/scripts/t" "$HOME/.local/ser/t"
+link_file "$DOTFILES/scripts/statusbar" "$HOME/.local/src/statusbar"
+link_file "$DOTFILES/scripts/t" "$HOME/.local/src/t"
 
 # --- zshrc folder files linked into home directory with dot prefix ---
 link_file "$DOTFILES/zshrc/xinitrc" "$HOME/.xinitrc"
@@ -75,8 +75,8 @@ if [ -d "$HOME/.config/dwm" ]; then
 fi
 
 echo "🛠️  Compiling dmenu..."
-if [ -d "$HOME/.local/ser/dmenu" ]; then
-    cd "$HOME/.local/ser/dmenu"
+if [ -d "$HOME/.local/src/dmenu" ]; then
+    cd "$HOME/.local/src/dmenu"
     sudo make clean install
 fi
 
